@@ -2,7 +2,7 @@
 ACEDEVEL NETWORKS S.R.L.
 COCHABAMBA - BOLIVIA 2017
 */
-var game = new Phaser.Game(568, 320, Phaser.AUTO, "gameDiv");
+var game = new Phaser.Game(746, 400, Phaser.CANVAS, "");
 var dude, suelo, obstaculos, enemigos, musica, enemigosDerrotados, flag= 0;
 
 var mainState = {
@@ -19,11 +19,11 @@ var mainState = {
 
 		//game.stage.backgroundColor = '#000';
 
-		game.load.spritesheet('dude', 'assets/gato.png', 80,108, 8);
+		game.load.spritesheet('dude', 'assets/gato2.png', 100,128, 8);
 		game.load.image('fondo', 'assets/City2.jpg');
 		game.load.image('bloqueSuelo', 'assets/pared.png');
 		//game.load.image('reloj', 'assets/reloj.png');
-		game.load.spritesheet('reloj', 'assets/caja1.png', 70, 70);
+		game.load.spritesheet('reloj', 'assets/caja1.png', 77, 77);
 		game.load.spritesheet('perrito', 'assets/DogRun.png', 128.67, 70);
 
 		game.load.audio('jump', 'assets/jump.wav');
@@ -77,21 +77,20 @@ var mainState = {
 		//dude.body.bounce.y = 0.2;
 		dude.body.gravity.y = 1000;
 		dude.anchor.setTo(0.5, 1);
+		console.log(dude.body);
 		//game.camera.follow(dude);
 		//dude.body.collideWorldBounds = true;
-		dude.animations.add('yell', [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22], 30, true);
-		dude.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 30, true);
+		dude.animations.add('yell', [0, 1, 2, 3, 4, 5, 6, 7, 8], 30, true);
+		dude.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7, 8], 30, true);
 		dude.animations.play('right');
-
+		dude.scale.setTo(0.7,0.7);
 
 		///obstáculos
 		obstaculos = game.add.group();
 		obstaculos.enableBody = true;
-		obstaculos.createMultiple(7, 'reloj');
+		obstaculos.createMultiple(8, 'reloj');
 		obstaculos.setAll('checkWorldBounds', true);
 		obstaculos.setAll('outOfBoundsKill', true);
-		obstaculos.callAll('animations.add', 'animations', 'girar', [0, 6, 1, 7, 2, 4, 3, 5], 5, true);
-		obstaculos.callAll('animations.play', 'animations', 'girar');
 
 
 		//enemigos
@@ -153,7 +152,7 @@ var mainState = {
 			return;
 
 		if(dude.body.touching.down){
-			dude.body.velocity.y = -550;
+			dude.body.velocity.y = -600;
 			game.add.tween(dude).to({angle: -20}, 100).start();
 		}
 
@@ -192,9 +191,11 @@ var mainState = {
 					this.lastVertical = true;
 					block = obstaculos.getFirstExists(false);
 					//block.reset(this.lastFloor.body.x + this.sizeBloque, game.height - 3 * this.sizeBloque);
-					block.reset(game.width, game.height - (3*this.sizeBloque));
+					block.reset(game.width,160);
+					
 					block.body.velocity.x = this.nivelVelocidad;
-					block.body.immovable = true;
+					block.body.immovable = true;;
+
 				}
 				else {
 					this.lastCliff = false;
