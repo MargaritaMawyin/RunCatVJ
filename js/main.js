@@ -104,7 +104,8 @@ var mainState = {
 		//controles
 		var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		spaceKey.onDown.add(this.saltar, this);
-		game.input.onDown.add(this.saltar, this);
+		var downKey =  game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+		downKey.onDown.add(this.bajar, this);
 	},
 
 	update: function() {
@@ -159,6 +160,11 @@ var mainState = {
 		// Play sound
 		//this.jumpSound.play();
 	},
+	bajar: function() {
+		dude.body.velocity.y =  600;
+		// Play sound
+		//this.jumpSound.play();
+	},
 
 	agregarEnemigo: function(){
 		var perro = game.add.sprite(game.width, game.height-this.sizeBloque-62, 'perrito');
@@ -169,7 +175,7 @@ var mainState = {
 		perro.animations.play('left');
 		enemigosDerrotados++;
 
-		if(enemigosDerrotados >= 25){
+		if(enemigosDerrotados >= 50){
 			game.paused = true;
 			alert("FELICIDADES LLEGASTE AL COLEGIO");
 			document.getElementById('gameDiv').style.display = 'none';
