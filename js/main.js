@@ -42,8 +42,8 @@ var mainState = {
 		document.getElementById("loadingGame").style.display = 'none';
 		var bloqueSuelo;
 		var bloqueSuelo2;
-		var bloqueSuelo3;
-		var bloqueSuelo4;
+		this.scratches = 0;
+    	this.maxScratches = 5;
 		enemigosDerrotados = 0;
 		//atributos del juego
 		this.sizeBloque = 70;
@@ -154,7 +154,7 @@ var mainState = {
 
 
 		//temporizadores
-		this.timer = game.time.events.loop(2500, this.agregarEnemigo, this);
+		this.timer = game.time.events.loop(6000, this.agregarEnemigo, this);
 
 
 		//controles
@@ -162,6 +162,15 @@ var mainState = {
 		spaceKey.onDown.add(this.saltar, this);
 		var downKey =  game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
 		downKey.onDown.add(this.bajar, this);
+
+		//mensaje de vidas 
+		var style1 = { font: "20px Arial", fill: "#ff0"};
+		var t1 = this.game.add.text(10, 20, "Vidas:", style1);
+		t1.fixedToCamera = true;
+		var style2 = { font: "26px Arial", fill: "#00ff00"};
+		this.pointsText = this.game.add.text(80, 18, "", style2);
+		this.refreshStats();
+		this.pointsText.fixedToCamera = true;
 	},
 
 	update: function() {
@@ -192,7 +201,6 @@ var mainState = {
 			/*if(dude.x <= -this.sizeBloque) {
 				game.state.start('main');
 			}*/
-			console.log(dude.x);
 			if(dude.y >= game.height + this.sizeBloque || dude.x <= -100) {
 				console.log("GAME OVER");
 				musica.pause();
@@ -202,7 +210,10 @@ var mainState = {
 		}
 
 	},
-
+	
+	refreshStats: function() {
+		this.pointsText.text = this.maxScratches - this.scratches;
+	  },
 	saltar: function() {
 		if (dude.alive == false)
 			return;
@@ -238,10 +249,12 @@ var mainState = {
 		}
 	},
 
-	gritar: function(){
-		console.log("ONDAS PODEROSAS DE VOZ ACTIVENSE!!!");
-		flag = 50;
-		dude.animations.play('yell');
+	gritar: function(dude, enemigos){
+		enemigos.destroy();
+    
+    //update our stats
+    this.scratches++;
+    this.refreshStats();
 	},
 };
 
