@@ -4,7 +4,11 @@ COCHABAMBA - BOLIVIA 2017
 */
 var game = new Phaser.Game(746, 400, Phaser.CANVAS, "");
 var dude, suelo, obstaculos, enemigos, musica, enemigosDerrotados, flag= 0;
-
+var mapa =[1,1,1,1,1,1,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,1,1,1,3
+	,1,1,4,4,4,4,4,4,5,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,
+	1,1,1,1,1,1,3,1,1,4,4,4,4,4,4,4,2,2,2,2,1,1,1,1,2,2,2,2,1,1
+	,1,2,2,2,2,1,1,2,2,2,1,1,3,1,1,4,4,4,4,4,4,5,1,1,1,1,1,1,1,1,1,1,1,1
+];
 var mainState = {
 
 	preload: function() {
@@ -19,11 +23,14 @@ var mainState = {
 
 		//game.stage.backgroundColor = '#000';
 
-		game.load.spritesheet('dude', 'assets/gato2.png', 100,128, 8);
+		game.load.spritesheet('dude', 'assets/gato2.png', 70,70, 8);
 		game.load.image('fondo', 'assets/City2.jpg');
 		game.load.image('bloqueSuelo', 'assets/pared.png');
 		//game.load.image('reloj', 'assets/reloj.png');
-		game.load.spritesheet('reloj', 'assets/caja1.png', 77, 77);
+		game.load.spritesheet('reloj', 'assets/caja1.png', 70, 70);
+		game.load.spritesheet('pregunta', 'assets/pregunta.png', 70, 70);
+		game.load.spritesheet('pilaCaja', 'assets/pilaCaja.png', 70, 420);
+
 		game.load.spritesheet('perrito', 'assets/DogRun.png', 128.67, 70);
 
 		game.load.audio('jump', 'assets/jump.wav');
@@ -34,6 +41,9 @@ var mainState = {
 	create: function() {
 		document.getElementById("loadingGame").style.display = 'none';
 		var bloqueSuelo;
+		var bloqueSuelo2;
+		var bloqueSuelo3;
+		var bloqueSuelo4;
 		enemigosDerrotados = 0;
 		//atributos del juego
 		this.sizeBloque = 70;
@@ -54,20 +64,67 @@ var mainState = {
 		//fondoJuego = game.add.tileSprite(0, 0, 'fondo');
 
 
-		//agregar el suelo
+		//Crear Mundo
 		suelo = game.add.group();
 		suelo.enableBody = true;
-		for(var i=0; i<12; ++i){
-			x = i * this.sizeBloque;
-			y = this.game.height - this.sizeBloque;
-			bloqueSuelo = suelo.create(x, y, 'bloqueSuelo');
-			bloqueSuelo.body.immovable = true;
-			bloqueSuelo.body.velocity.x = this.nivelVelocidad;
-		}
-		this.lastFloor = bloqueSuelo;
-		this.lastCliff = false;
-		this.lastVertical = false;
-
+		for(var i=0; i<mapa.length; ++i){
+			switch (mapa[i]) {
+				case 0: // vacio
+				  break;
+				case 1: //suelo
+					x = i * this.sizeBloque;
+					y = this.game.height - this.sizeBloque ;
+					bloqueSuelo = suelo.create(x, y, 'bloqueSuelo');
+					bloqueSuelo.body.immovable = true;
+					bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+				   break;
+				case 2: // caja
+					x = i * this.sizeBloque;
+					y = this.game.height - this.sizeBloque * 3 ;
+					bloqueSuelo = suelo.create(x, y, 'reloj');
+					bloqueSuelo.body.immovable = true;
+					bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+				    break;
+				case 3: // pregunta
+					x = i * this.sizeBloque;
+					y = this.game.height - this.sizeBloque ;
+					bloqueSuelo2 = suelo.create(x, y, 'bloqueSuelo');
+					bloqueSuelo2.body.immovable = true;
+					bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
+					x = i * this.sizeBloque;
+					y = this.game.height - this.sizeBloque * 2 ;
+					bloqueSuelo = suelo.create(x, y, 'pregunta');
+					bloqueSuelo.body.immovable = true;
+					bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+				    break;
+				case 4: // caja mas suelo
+					x = i * this.sizeBloque;
+					y = this.game.height - this.sizeBloque * 3 ;
+					bloqueSuelo = suelo.create(x, y, 'reloj');
+					bloqueSuelo.body.immovable = true;
+					bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+					x = i * this.sizeBloque;
+					y = this.game.height - this.sizeBloque ;
+					bloqueSuelo2 = suelo.create(x, y, 'bloqueSuelo');
+					bloqueSuelo2.body.immovable = true;
+					bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
+				    break;	
+				case 5: // caja apiladas 
+				x = i * this.sizeBloque;
+					y = this.game.height - this.sizeBloque * 8 ;
+					bloqueSuelo = suelo.create(x, y, 'pilaCaja');
+					bloqueSuelo.body.immovable = true;
+					bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+					x = i * this.sizeBloque;
+					y = this.game.height - this.sizeBloque ;
+					bloqueSuelo2 = suelo.create(x, y, 'bloqueSuelo');
+					bloqueSuelo2.body.immovable = true;
+					bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
+				    break;	
+					
+			  }
+		}	
+	
 
 		//agregar al dude
 		x = 200;
@@ -76,8 +133,7 @@ var mainState = {
 		game.physics.arcade.enable(dude);
 		//dude.body.bounce.y = 0.2;
 		dude.body.gravity.y = 1000;
-		dude.anchor.setTo(0.5, 1);
-		console.log(dude.body);
+		
 		//game.camera.follow(dude);
 		//dude.body.collideWorldBounds = true;
 		dude.animations.add('yell', [0, 1, 2, 3, 4, 5, 6, 7, 8], 30, true);
@@ -136,7 +192,8 @@ var mainState = {
 			/*if(dude.x <= -this.sizeBloque) {
 				game.state.start('main');
 			}*/
-			if(dude.y >= game.height + this.sizeBloque) {
+			console.log(dude.x);
+			if(dude.y >= game.height + this.sizeBloque || dude.x <= -100) {
 				console.log("GAME OVER");
 				musica.pause();
 				//alert("PERRUNOS QUE INTENTARON MORDER A NUESTRO HEROE: "+enemigosDerrotados);
@@ -144,8 +201,6 @@ var mainState = {
 			}
 		}
 
-		//generate further terrain
-		this.generar_camino();
 	},
 
 	saltar: function() {
@@ -153,7 +208,7 @@ var mainState = {
 			return;
 
 		if(dude.body.touching.down){
-			dude.body.velocity.y = -600;
+			dude.body.velocity.y = -550;
 			game.add.tween(dude).to({angle: -20}, 100).start();
 		}
 
@@ -180,38 +235,6 @@ var mainState = {
 			alert("FELICIDADES LLEGASTE AL COLEGIO");
 			document.getElementById('gameDiv').style.display = 'none';
 			document.getElementById('congratulaciones').style.display = 'block';
-		}
-	},
-
-	generar_camino: function(){
-		var i, delta = 0, block;
-		for(i = 0; i < suelo.length; i++) {
-			if(suelo.getAt(i).body.x <= -this.sizeBloque) {
-				if(Math.random() < this.probCliff && !this.lastCliff && !this.lastVertical) {
-					delta = 1;
-					this.lastCliff = true;
-					this.lastVertical = false;
-				}
-				else if(Math.random() < this.probVertical && !this.lastCliff) {
-					this.lastCliff = false;
-					this.lastVertical = true;
-					block = obstaculos.getFirstExists(false);
-					//block.reset(this.lastFloor.body.x + this.sizeBloque, game.height - 3 * this.sizeBloque);
-					block.reset(game.width,160);
-					
-					block.body.velocity.x = this.nivelVelocidad;
-					block.body.immovable = true;;
-
-				}
-				else {
-					this.lastCliff = false;
-					this.lastVertical = false;
-				}
-
-				suelo.getAt(i).body.x = this.lastFloor.body.x + this.sizeBloque + delta * this.sizeBloque * 1.5;
-				this.lastFloor = suelo.getAt(i);
-				break;
-			}
 		}
 	},
 
