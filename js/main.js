@@ -11,11 +11,12 @@ var dude,
   enemigosDerrotados,
   flag = 0;
 var mapa = [
-  1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1,
-  3, 1, 1, 4, 4, 4, 4, 4, 4, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0,
-  1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 3, 1, 1, 4, 4, 4, 4, 4, 4, 4, 2, 2, 2, 2, 1, 1,
-  1, 1, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 3, 1, 1, 4, 4, 4,
-  4, 4, 4, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	1,1,1,1,1,1,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,1,1,1,3,1,1,4,4,4,
+	4,4,4,5,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,1,1,1,1,3,1,
+	1,4,4,4,4,4,4,4,2,2,2,2,1,1,1,1,2,2,2,2,1,1,1,2,2,2,2,1,1,2,2,2,
+	1,1,3,1,1,4,4,4,4,4,4,5,1,1,1,1,1,1,1,1,1,1,1,6,1,1,1,1,1,1,1,1
+
+
 ];
 var mainState = {
   preload: function () {
@@ -38,6 +39,8 @@ var mainState = {
     game.load.spritesheet("dude", "assets/gatoMix.png", 70, 61.25, 16);
     game.load.image("fondo", "assets/City2.jpg");
     game.load.image("bloqueSuelo", "assets/pared.png");
+	game.load.spritesheet("castillo", "assets/castillo.png");
+
     //game.load.image('reloj', 'assets/reloj.png');
     game.load.spritesheet("reloj", "assets/caja1.png", 70, 70);
     game.load.spritesheet("pregunta", "assets/pregunta.png", 70, 70);
@@ -135,6 +138,18 @@ var mainState = {
           bloqueSuelo2.body.immovable = true;
           bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
           break;
+		case 6: // castillo
+          x = i * this.sizeBloque;
+          y = this.game.height - this.sizeBloque * 3;
+          bloqueSuelo = suelo.create(x, y, "castillo");
+          bloqueSuelo.body.immovable = true;
+          bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+          x = i * this.sizeBloque;
+          y = this.game.height - this.sizeBloque;
+          bloqueSuelo2 = suelo.create(x, y, "bloqueSuelo");
+          bloqueSuelo2.body.immovable = true;
+          bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
+          break;
       }
     }
 
@@ -148,20 +163,12 @@ var mainState = {
 
     //game.camera.follow(dude);
     //dude.body.collideWorldBounds = true;
-    dude.animations.add("yell", [0, 1, 2, 3, 4, 5, 6, 7, 8], 30, true);
-    dude.animations.add("right", [0, 1, 2, 3, 4, 5, 6, 7, 8], 30, true);
+    dude.animations.add("yell", [0, 1, 2, 3, 4, 5, 6, 7], 15, true);
+    dude.animations.add("right", [0, 1, 2, 3, 4, 5, 6, 7], 15, true);
     dude.animations.add("up", [8, 9, 8], 8, true); //para el salto
 
     dude.animations.play("right");
-    dude.scale.setTo(0.7, 0.7);
     console.log(dude);
-
-    ///obstáculos
-    obstaculos = game.add.group();
-    obstaculos.enableBody = true;
-    obstaculos.createMultiple(8, "reloj");
-    obstaculos.setAll("checkWorldBounds", true);
-    obstaculos.setAll("outOfBoundsKill", true);
 
     //enemigos
     enemigos = game.add.group();
@@ -257,7 +264,7 @@ var mainState = {
   agregarEnemigo: function () {
     var perro = game.add.sprite(
       game.width,
-      game.height - this.sizeBloque - 62,
+      game.height - this.sizeBloque-55,
       "perrito"
     );
     enemigos.add(perro);
@@ -265,14 +272,8 @@ var mainState = {
     perro.body.velocity.x = this.nivelVelocidad - 100;
     perro.animations.add("left", [2, 1, 0, 5, 4, 3, 8, 7, 6], 15, true);
     perro.animations.play("left");
-    enemigosDerrotados++;
+	perro.scale.setTo(0.8, 0.8);
 
-    if (enemigosDerrotados >= 50) {
-      game.paused = true;
-      alert("FELICIDADES LLEGASTE AL COLEGIO");
-      document.getElementById("gameDiv").style.display = "none";
-      document.getElementById("congratulaciones").style.display = "block";
-    }
   },
 
   gritar: function (dude, enemigos) {
