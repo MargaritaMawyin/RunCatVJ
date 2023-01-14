@@ -29,6 +29,10 @@ Estas  corriendo por la calle y se te va presentar una pregunta relacionada al c
 Después de contestar todas las preguntas, te encontras con un castillo. Felicidades! Has logrado escapar de la fría y peligrosa calle. 
 
 
+:video_game: [Comienza el juego aquí](https://margaritamawyin.github.io/RunCatVJ/)
+
+
+<hr>
 
 Video
 https://youtu.be/nW-WKJTdaiE
