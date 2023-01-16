@@ -1,57 +1,68 @@
-<!--
-
-ACEDEVEL NETWORKS S.R.L.
-COCHABAMBA - BOLIVIA 2017
-
--->
 <!DOCTYPE html>
 <html>
 
 <head>
-	<title>R</title>
+	<title>KITTY RUN</title>
 	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<meta name="viewport" content="initial-scale=1.0" />
-	<meta name="viewport" content="initial-scale=1.0" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link
+            rel="stylesheet"
+            type="text/css"
+            media="screen"
+            href="css/styles.css"
+    />
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css"
+            media="screen"
+            rel="stylesheet"
+            type="text/css"
+    />
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+    <script
+            src="js/Box2dWeb-2.1.a.3.min.js"
+            type="text/javascript"
+            charset="utf-8"
+    ></script>
+    <script src="js/game.js" type="text/javascript"></script>
 	<style>
-		.jugar{font-weight: bolder;text-decoration: none;margin: 100px; font-size: 50px;}
-		#gameDiv{display:none;width:100%; text-align: center}
-		#congratulaciones{display:none; text-align: center; width:100%}
-		.game{border:0px; margin:0px}
-		#intro{text-align: center}
-		#intro img{width:60%;}
-		#loadingGame{text-align: left; font-weight: bold; display:block; margin-bottom: 60px}
-		#loadingGame img{width:75px; vertical-align: middle}
+	
 	</style>
 	<script type="text/javascript" src="js/phaser.min.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 </head>
 <script>
 	function comenzar(){
-		document.getElementById('intro').style.display = 'none';
-		document.getElementById('gameDiv').style.display = 'block';
+		//document.getElementById('intro').style.display = 'none';
+		//document.getElementById('gameDiv').style.display = 'block';
 		game.state.start('main');
 	}
 </script>
 
 <body class="game">
-
-	<div id="intro">
-		<h1></h1><br />
-		<!-- <img src="assets/1.jpg" /> <br />
-		<br /> -->
-		<a href="javascript: void(0);" onclick="comenzar()" class="jugar">Haz click para jugar</a>
-		<br /><br />
-	</div>
-	<div id="gameDiv">
-		<div id="loadingGame">
-			Por favor espere un momento <img src="assets/loading.gif">
+	<div id="gamecontainer">
+		<canvas
+				class="gamelayer"
+				id="gamecanvas"
+				width="1000"
+				height="400"
+		></canvas>
+		<div class="gamelayer" id="gamestartscreen">
+			<img
+					src="assets/inicio.png"
+					alt="PlayGame"
+					onclick="comenzar()"
+					
+			/>
+			<br/>
+			<img alt="Settings" onclick="main.toggleSettingsScreen()" src="assets/reglas.png">
+		</div>
 		</div>
 	</div>
-	<div id="congratulaciones">
-		<H1>FELICIDADES HAS LLEGADO AL COLEGIO</H1>
-		<a href="javascript:void(0);" onclick="location.reload()" class="jugar">Jugar otra vez</a>
-	</div>
 
+	
 
 </body>
 </html>

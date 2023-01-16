@@ -1,7 +1,4 @@
-/*mainState
-ACEDEVEL NETWORKS S.R.L.
-COCHABAMBA - BOLIVIA 2017
-*/
+
 var game = new Phaser.Game(746, 400, Phaser.CANVAS, "");
 var dude,
   suelo,
