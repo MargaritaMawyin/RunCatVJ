@@ -1,7 +1,4 @@
-@font-face {
-    font-family: SuperMarioBros;
-    src: url("../fonts/SuperMarioBros.ttf");
-}
+
 .game{
     /* align-items por defecto tiene el valor `stretch` */
     align-items: start
@@ -10,7 +7,7 @@
 #gamecontainer {
     width: 1000px;
     height: 586px;
-    background: url(../assets/fondo.png);
+    background: url(../assets/Inicio/fondo.png);
     border: 1px solid black;
 }
 

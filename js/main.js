@@ -5,6 +5,7 @@ var dude,
   obstaculos,
   enemigos,
   musica,
+  saltarM,
   musicaFinal,
   enemigosDerrotados,
   flag = 0;
@@ -31,14 +32,18 @@ var mainState = {
     game.scale.pageAlignVertically = true;
 
     //game.stage.backgroundColor = '#000';
+    
+    game.load.image("inicio","/assets/Inicio/fondo.png");
+    game.load.image("bttS","/assets/Inicio/inicia.png");
+    game.load.image("bttR","/assets/Inicio/regla.png");
+
     game.load.image("gameOver", "/assets/Game over/Mesa de trabajo 1_2.png");
     game.load.image("reiniciar", "/assets/Game over/Mesa de trabajo 10_1.png");
     game.load.image("salir", "/assets/Game over/Mesa de trabajo 10_2.png");
-
     game.load.spritesheet("dude", "assets/gatoMix.png", 70, 61.25, 16);
     game.load.image("fondo", "assets/City2.jpg");
     game.load.image("bloqueSuelo", "assets/pared.png");
-	game.load.spritesheet("castillo", "assets/castillo.png");
+	  game.load.spritesheet("castillo", "assets/castillo.png");
 
     //game.load.image('reloj', 'assets/reloj.png');
     game.load.spritesheet("reloj", "assets/caja1.png", 70, 70);
@@ -56,6 +61,13 @@ var mainState = {
 
   create: function () {
     document.getElementById("loadingGame").style.display = "none";
+
+    //crear pantalla inicio
+    var imagen = game.add.sprite(0, 0, "inicio");
+    var bttnInicio = game.add.sprite(295, 190, "bttnInicio");
+    var botonReglas = game.add.sprite(295, 260, "bttnReglas");
+
+    
     var bloqueSuelo;
     var bloqueSuelo2;
     this.scratches = 0;
@@ -72,6 +84,7 @@ var mainState = {
     musica = game.add.audio("musicaFondo");
     musica.play();
 
+  
     //agregar fondo al juego
     this.fondoJuego = game.add.tileSprite(
       0,
@@ -194,7 +207,8 @@ var mainState = {
   },
 
   update: function () {
-	
+
+	  
     this.fondoJuego.tilePosition.x -= 0.05;
     game.physics.arcade.collide(dude, suelo);
     game.physics.arcade.collide(dude, obstaculos);
@@ -252,19 +266,16 @@ var mainState = {
   },
   saltar: function () {
     if (dude.alive == false) return;
-
     if (dude.body.touching.down) {
       dude.body.velocity.y = -550;
       game.add.tween(dude).to({ angle: -20 }, 100).start();
     }
-
-    // Play sound
-    //this.jumpSound.play();
+    saltarM = game.add.audio("jump");
+    saltarM.play();
+    
   },
   bajar: function () {
     dude.body.velocity.y = 600;
-    // Play sound
-    //this.jumpSound.play();
   },
 
   agregarEnemigo: function () {
