@@ -5,6 +5,7 @@ var dude,
   obstaculos,
   enemigos,
   musica,
+  musicaFinal,
   enemigosDerrotados,
   flag = 0;
 var mapa = [
@@ -12,8 +13,6 @@ var mapa = [
 	4,4,4,5,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,1,1,1,1,3,1,
 	1,4,4,4,4,4,4,4,2,2,2,2,1,1,1,1,2,2,2,2,1,1,1,2,2,2,2,1,1,2,2,2,
 	1,1,3,1,1,4,4,4,4,4,4,5,1,1,1,1,1,1,1,1,1,1,1,6,1,1,1,1,1,1,1,1
-
-
 ];
 var mainState = {
   preload: function () {
@@ -32,6 +31,9 @@ var mainState = {
     game.scale.pageAlignVertically = true;
 
     //game.stage.backgroundColor = '#000';
+    game.load.image("gameOver", "/assets/Game over/Mesa de trabajo 1_2.png");
+    game.load.image("reiniciar", "/assets/Game over/Mesa de trabajo 10_1.png");
+    game.load.image("salir", "/assets/Game over/Mesa de trabajo 10_2.png");
 
     game.load.spritesheet("dude", "assets/gatoMix.png", 70, 61.25, 16);
     game.load.image("fondo", "assets/City2.jpg");
@@ -48,6 +50,8 @@ var mainState = {
     game.load.audio("jump", "assets/jump.wav");
 
     game.load.audio("musicaFondo", ["assets/sample.mp3", "assets/sample.ogg"]);
+    game.load.audio("gameFondo", ["assets/gameover.mp3"]);
+
   },
 
   create: function () {
@@ -217,20 +221,25 @@ var mainState = {
 				game.state.start('main');
 			}*/
       if (dude.y >= game.height + this.sizeBloque || dude.x <= -100) {
-        console.log("GAME OVER");
-
-        var style1 = { font: "40px Arial", fill: "#ff0" };
-        var gameover = this.game.add.text(100, 200, "GAME OVER", style1);
-        gameover.fixedToCamera = true;
-
         musica.pause();
         //alert("PERRUNOS QUE INTENTARON MORDER A NUESTRO HEROE: "+enemigosDerrotados);
     //    this.scene.pause("main")
 	// game.state.pause();
+        var imagen = game.add.sprite(0,0,"gameOver");
+        var botonReiniciar = game.add.sprite(191,249,"reiniciar");
+        var botonSalir = game.add.sprite(395,249,"salir");
 
-        game.state.pause("main")
+        botonReiniciar.inputEnabled = true;
+        botonReiniciar.events.onInputDown.add(function(){
+          game.state.start("main"); 
+        });
+          botonSalir.inputEnabled = true;
+          botonSalir.events.onInputDown.add(function(){
+            location.reload()
+          });
+
+        game.state.pause("main");
 		
-		game.state.start("main");
 	}
     }
   },
@@ -275,10 +284,10 @@ var mainState = {
 
   gritar: function (dude, enemigos) {
     enemigos.destroy();
+    
 
     //update our stats
-    this.scratches++;
-    this.refreshStats();
+    
   },
 };
 
