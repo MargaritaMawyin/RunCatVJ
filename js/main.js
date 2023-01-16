@@ -1,14 +1,19 @@
 
 var game = new Phaser.Game(746, 400, Phaser.CANVAS, "");
+
 var dude,
   suelo,
   obstaculos,
   enemigos,
+  preguntas,
   musica,
   saltarM,
   musicaFinal,
   enemigosDerrotados,
-  flag = 0;
+  flag = 0,
+  preguntasArriba = 1,
+  preguntasAbajo = 0,
+ imagen;
 var mapa = [
 	1,1,1,1,1,1,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,1,1,1,3,1,1,4,4,4,
 	4,4,4,5,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,1,1,1,1,3,1,
@@ -36,7 +41,12 @@ var mainState = {
     game.load.image("inicio","/assets/Inicio/fondo.png");
     game.load.image("bttS","/assets/Inicio/inicia.png");
     game.load.image("bttR","/assets/Inicio/regla.png");
+    for (var i = 1; i <=preguntasArriba; ++i) {
+      var preguntaA = "preguntaA"+preguntasArriba;
+      var direccion =  "/assets/preguntas/arriba/pregunta"+preguntasArriba+".png"
+      game.load.image(preguntaA,direccion);
 
+    }
     game.load.image("gameOver", "/assets/Game over/Mesa de trabajo 1_2.png");
     game.load.image("reiniciar", "/assets/Game over/Mesa de trabajo 10_1.png");
     game.load.image("salir", "/assets/Game over/Mesa de trabajo 10_2.png");
@@ -97,6 +107,7 @@ var mainState = {
 
     //Crear Mundo
     suelo = game.add.group();
+    preguntas = game.add.group();
     suelo.enableBody = true;
     for (var i = 0; i < mapa.length; ++i) {
       switch (mapa[i]) {
@@ -124,9 +135,17 @@ var mainState = {
           bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
           x = i * this.sizeBloque;
           y = this.game.height - this.sizeBloque * 2;
-          bloqueSuelo = suelo.create(x, y, "pregunta");
-          bloqueSuelo.body.immovable = true;
+          var pregunta;
+          bloqueSuelo = game.add.sprite(
+            x,
+            y,
+            "pregunta"
+          );
+          preguntas.add(bloqueSuelo);
+          game.physics.arcade.enable(bloqueSuelo);
           bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+
+
           break;
         case 4: // caja mas suelo
           x = i * this.sizeBloque;
@@ -186,7 +205,6 @@ var mainState = {
 
     //enemigos
     enemigos = game.add.group();
-
     //temporizadores
     this.timer = game.time.events.loop(6000, this.agregarEnemigo, this);
 
@@ -214,6 +232,7 @@ var mainState = {
     game.physics.arcade.collide(dude, obstaculos);
     game.physics.arcade.collide(dude, enemigos, this.gritar, null, this);
     //game.physics.arcade.overlap(dude, pipes, this.choque, null, this);
+    game.physics.arcade.collide(dude, preguntas, this.presentarPregunta, null, this);
 
     if (dude.alive) {
       if (dude.body.touching.down) {
@@ -252,7 +271,6 @@ var mainState = {
             location.reload()
           });
 
-        game.state.pause("main");
 		
 	}
     }
@@ -295,10 +313,24 @@ var mainState = {
 
   gritar: function (dude, enemigos) {
     enemigos.destroy();
-    
-
+    this.scratches++;
+    this.refreshStats();
     //update our stats
     
+  },
+  presentarPregunta: function (dudee, caja) {
+    caja.destroy();
+    imagen = game.add.sprite(70, 100,"preguntaA1");
+    imagen.scale.setTo(0.9, 0.9);
+
+    game.paused = true;
+    window.setTimeout(this.seguirjugando, 10000);
+    
+  },
+  seguirjugando: function () {
+    //update our stats
+    imagen.destroy();
+    game.paused = false;
   },
 };
 
