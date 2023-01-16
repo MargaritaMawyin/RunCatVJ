@@ -1,9 +1,4 @@
-<!--
 
-ACEDEVEL NETWORKS S.R.L.
-COCHABAMBA - BOLIVIA 2017
-
--->
 <!DOCTYPE html>
 <html>
 
@@ -25,32 +20,18 @@ COCHABAMBA - BOLIVIA 2017
 	<script type="text/javascript" src="js/phaser.min.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 </head>
-<script>
-	function comenzar(){
-		document.getElementById('intro').style.display = 'none';
-		document.getElementById('gameDiv').style.display = 'block';
-		game.state.start('main');
-	}
-</script>
+
 
 <body class="game">
 
-	<div id="intro">
-		<h1></h1><br />
-		<!-- <img src="assets/1.jpg" /> <br />
-		<br /> -->
-		<a href="javascript: void(0);" onclick="comenzar()" class="jugar">Haz click para jugar</a>
-		<br /><br />
-	</div>
-	<div id="gameDiv">
-		<div id="loadingGame">
-			Por favor espere un momento <img src="assets/loading.gif">
+
+	<div id="loadingGame">
+			<script>
+					game.state.start('main');
+			</script>
 		</div>
 	</div>
-	<div id="congratulaciones">
-		<H1>FELICIDADES HAS LLEGADO AL COLEGIO</H1>
-		<a href="javascript:void(0);" onclick="location.reload()" class="jugar">Jugar otra vez</a>
-	</div>
+
 
 
 </body>

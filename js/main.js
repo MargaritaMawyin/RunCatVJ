@@ -1,13 +1,12 @@
-/*mainState
-ACEDEVEL NETWORKS S.R.L.
-COCHABAMBA - BOLIVIA 2017
-*/
+
 var game = new Phaser.Game(746, 400, Phaser.CANVAS, "");
 var dude,
   suelo,
   obstaculos,
   enemigos,
   musica,
+  saltarM,
+  musicaFinal,
   enemigosDerrotados,
   flag = 0;
 var mapa = [
@@ -15,8 +14,6 @@ var mapa = [
 	4,4,4,5,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,1,1,1,1,3,1,
 	1,4,4,4,4,4,4,4,2,2,2,2,1,1,1,1,2,2,2,2,1,1,1,2,2,2,2,1,1,2,2,2,
 	1,1,3,1,1,4,4,4,4,4,4,5,1,1,1,1,1,1,1,1,1,1,1,6,1,1,1,1,1,1,1,1
-
-
 ];
 var mainState = {
   preload: function () {
@@ -35,11 +32,18 @@ var mainState = {
     game.scale.pageAlignVertically = true;
 
     //game.stage.backgroundColor = '#000';
+    
+    game.load.image("inicio","/assets/Inicio/fondo.png");
+    game.load.image("bttS","/assets/Inicio/inicia.png");
+    game.load.image("bttR","/assets/Inicio/regla.png");
 
+    game.load.image("gameOver", "/assets/Game over/Mesa de trabajo 1_2.png");
+    game.load.image("reiniciar", "/assets/Game over/Mesa de trabajo 10_1.png");
+    game.load.image("salir", "/assets/Game over/Mesa de trabajo 10_2.png");
     game.load.spritesheet("dude", "assets/gatoMix.png", 70, 61.25, 16);
     game.load.image("fondo", "assets/City2.jpg");
     game.load.image("bloqueSuelo", "assets/pared.png");
-	game.load.spritesheet("castillo", "assets/castillo.png");
+	  game.load.spritesheet("castillo", "assets/castillo.png");
 
     //game.load.image('reloj', 'assets/reloj.png');
     game.load.spritesheet("reloj", "assets/caja1.png", 70, 70);
@@ -51,10 +55,19 @@ var mainState = {
     game.load.audio("jump", "assets/jump.wav");
 
     game.load.audio("musicaFondo", ["assets/sample.mp3", "assets/sample.ogg"]);
+    game.load.audio("gameFondo", ["assets/gameover.mp3"]);
+
   },
 
   create: function () {
     document.getElementById("loadingGame").style.display = "none";
+
+    //crear pantalla inicio
+    var imagen = game.add.sprite(0, 0, "inicio");
+    var bttnInicio = game.add.sprite(295, 190, "bttnInicio");
+    var botonReglas = game.add.sprite(295, 260, "bttnReglas");
+
+    
     var bloqueSuelo;
     var bloqueSuelo2;
     this.scratches = 0;
@@ -71,6 +84,7 @@ var mainState = {
     musica = game.add.audio("musicaFondo");
     musica.play();
 
+  
     //agregar fondo al juego
     this.fondoJuego = game.add.tileSprite(
       0,
@@ -193,7 +207,8 @@ var mainState = {
   },
 
   update: function () {
-	
+
+	  
     this.fondoJuego.tilePosition.x -= 0.05;
     game.physics.arcade.collide(dude, suelo);
     game.physics.arcade.collide(dude, obstaculos);
@@ -220,20 +235,25 @@ var mainState = {
 				game.state.start('main');
 			}*/
       if (dude.y >= game.height + this.sizeBloque || dude.x <= -100) {
-        console.log("GAME OVER");
-
-        var style1 = { font: "40px Arial", fill: "#ff0" };
-        var gameover = this.game.add.text(100, 200, "GAME OVER", style1);
-        gameover.fixedToCamera = true;
-
         musica.pause();
         //alert("PERRUNOS QUE INTENTARON MORDER A NUESTRO HEROE: "+enemigosDerrotados);
     //    this.scene.pause("main")
 	// game.state.pause();
+        var imagen = game.add.sprite(0,0,"gameOver");
+        var botonReiniciar = game.add.sprite(191,249,"reiniciar");
+        var botonSalir = game.add.sprite(395,249,"salir");
 
-        game.state.pause("main")
+        botonReiniciar.inputEnabled = true;
+        botonReiniciar.events.onInputDown.add(function(){
+          game.state.start("main"); 
+        });
+          botonSalir.inputEnabled = true;
+          botonSalir.events.onInputDown.add(function(){
+            location.reload()
+          });
+
+        game.state.pause("main");
 		
-		game.state.start("main");
 	}
     }
   },
@@ -246,19 +266,16 @@ var mainState = {
   },
   saltar: function () {
     if (dude.alive == false) return;
-
     if (dude.body.touching.down) {
       dude.body.velocity.y = -550;
       game.add.tween(dude).to({ angle: -20 }, 100).start();
     }
-
-    // Play sound
-    //this.jumpSound.play();
+    saltarM = game.add.audio("jump");
+    saltarM.play();
+    
   },
   bajar: function () {
     dude.body.velocity.y = 600;
-    // Play sound
-    //this.jumpSound.play();
   },
 
   agregarEnemigo: function () {
@@ -278,10 +295,10 @@ var mainState = {
 
   gritar: function (dude, enemigos) {
     enemigos.destroy();
+    
 
     //update our stats
-    this.scratches++;
-    this.refreshStats();
+    
   },
 };
 
