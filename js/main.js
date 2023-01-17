@@ -6,6 +6,7 @@ var dude,
   enemigos,
   musica,
   saltarM,
+  cayendoM,
   musicaFinal,
   enemigosDerrotados,
   flag = 0;
@@ -52,22 +53,17 @@ var mainState = {
 
     game.load.spritesheet("perrito", "assets/DogRun.png", 128.67, 70);
 
-    game.load.audio("jump", "assets/jump.wav");
+    game.load.audio("jump", "assets/sonidos/jump.wav");
+    game.load.audio("muere", "assets/sonidos/gatoCayendo.mp3");
 
-    game.load.audio("musicaFondo", ["assets/sample.mp3", "assets/sample.ogg"]);
-    game.load.audio("gameFondo", ["assets/gameover.mp3"]);
+    game.load.audio("musicaFondo","assets/sonidos/opcion1.wav" );
+    game.load.audio("gameFondo", ["assets/sonidos/gameover.mp3"]);
 
   },
 
   create: function () {
+
     document.getElementById("loadingGame").style.display = "none";
-
-    //crear pantalla inicio
-    var imagen = game.add.sprite(0, 0, "inicio");
-    var bttnInicio = game.add.sprite(295, 190, "bttnInicio");
-    var botonReglas = game.add.sprite(295, 260, "bttnReglas");
-
-    
     var bloqueSuelo;
     var bloqueSuelo2;
     this.scratches = 0;
@@ -235,10 +231,9 @@ var mainState = {
 				game.state.start('main');
 			}*/
       if (dude.y >= game.height + this.sizeBloque || dude.x <= -100) {
+        
+        
         musica.pause();
-        //alert("PERRUNOS QUE INTENTARON MORDER A NUESTRO HEROE: "+enemigosDerrotados);
-    //    this.scene.pause("main")
-	// game.state.pause();
         var imagen = game.add.sprite(0,0,"gameOver");
         var botonReiniciar = game.add.sprite(191,249,"reiniciar");
         var botonSalir = game.add.sprite(395,249,"salir");
@@ -258,9 +253,6 @@ var mainState = {
     }
   },
   
-  
-
-
   refreshStats: function () {
     this.pointsText.text = this.maxScratches - this.scratches;
   },
@@ -276,6 +268,7 @@ var mainState = {
   },
   bajar: function () {
     dude.body.velocity.y = 600;
+    
   },
 
   agregarEnemigo: function () {
@@ -295,6 +288,8 @@ var mainState = {
 
   gritar: function (dude, enemigos) {
     enemigos.destroy();
+    cayendoM = game.add.audio("muere");
+    cayendoM.play();
     
 
     //update our stats

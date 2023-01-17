@@ -3,37 +3,46 @@
 <html>
 
 <head>
-	<title>R</title>
+	<title>Stray Cat</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="initial-scale=1.0" />
-	<meta name="viewport" content="initial-scale=1.0" />
-	<style>
-		.jugar{font-weight: bolder;text-decoration: none;margin: 100px; font-size: 50px;}
-		#gameDiv{display:none;width:100%; text-align: center}
-		#congratulaciones{display:none; text-align: center; width:100%}
-		.game{border:0px; margin:0px}
-		#intro{text-align: center}
-		#intro img{width:60%;}
-		#loadingGame{text-align: left; font-weight: bold; display:block; margin-bottom: 60px}
-		#loadingGame img{width:75px; vertical-align: middle}
-	</style>
+	<link rel="stylesheet" type="text/css" media="screen" href="css/styles.css" />
 	<script type="text/javascript" src="js/phaser.min.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 </head>
 
+<script>
+	function comenzar(){
+		document.getElementById('gamecontainer').style.display = 'none';
+		game.state.start('main');
+	}
+</script>
 
 <body class="game">
+	<div id="gamecontainer">
+		<canvas
+		class="gamelayer"
+		id="gamecanvas"
+		width="1306"
+		height="700"
+		></canvas>
+	<div class="gamelayer" id="loadingGame">
+			<img src="assets/Inicio/inicia.png" alt="Play Game"
+			onclick="comenzar()" />
 
-
-	<div id="loadingGame">
-			<script>
-					game.state.start('main');
-			</script>
 		</div>
+	<div class="gamelayer" id="regla">
+			<img src="assets/Inicio/regla.png" alt="regla"
+			onclick="comenzar()" />
+
+		</div>
+	
 	</div>
 
-
-
+	
+	
+</div>
+	
 </body>
 </html>
 
