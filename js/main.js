@@ -13,9 +13,10 @@ var dude,
   flag = 0,
   preguntasArriba = 1,
   preguntasAbajo = 0,
+  castillos,
  imagen;
 var mapa = [
-	1,1,1,1,1,1,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,1,1,1,3,1,1,4,4,4,
+	1,1,1,1,1,1,0,0,6,1,1,2,2,2,1,1,1,2,2,2,1,1,1,1,1,1,3,1,1,4,4,4,
 	4,4,4,5,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,1,1,1,1,3,1,
 	1,4,4,4,4,4,4,4,2,2,2,2,1,1,1,1,2,2,2,2,1,1,1,2,2,2,2,1,1,2,2,2,
 	1,1,3,1,1,4,4,4,4,4,4,5,1,1,1,1,1,1,1,1,1,1,1,6,1,1,1,1,1,1,1,1
@@ -108,6 +109,7 @@ var mainState = {
     //Crear Mundo
     suelo = game.add.group();
     preguntas = game.add.group();
+    castillos = game.add.group();
     suelo.enableBody = true;
     for (var i = 0; i < mapa.length; ++i) {
       switch (mapa[i]) {
@@ -135,7 +137,6 @@ var mainState = {
           bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
           x = i * this.sizeBloque;
           y = this.game.height - this.sizeBloque * 2;
-          var pregunta;
           bloqueSuelo = game.add.sprite(
             x,
             y,
@@ -144,8 +145,6 @@ var mainState = {
           preguntas.add(bloqueSuelo);
           game.physics.arcade.enable(bloqueSuelo);
           bloqueSuelo.body.velocity.x = this.nivelVelocidad;
-
-
           break;
         case 4: // caja mas suelo
           x = i * this.sizeBloque;
@@ -171,11 +170,16 @@ var mainState = {
           bloqueSuelo2.body.immovable = true;
           bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
           break;
-		case 6: // castillo
+		    case 6: // castillo
           x = i * this.sizeBloque;
           y = this.game.height - this.sizeBloque * 3;
-          bloqueSuelo = suelo.create(x, y, "castillo");
-          bloqueSuelo.body.immovable = true;
+          bloqueSuelo = game.add.sprite(
+            x,
+            y,
+            "castillo"
+          );
+          castillos.add(bloqueSuelo);
+          game.physics.arcade.enable(bloqueSuelo);
           bloqueSuelo.body.velocity.x = this.nivelVelocidad;
           x = i * this.sizeBloque;
           y = this.game.height - this.sizeBloque;
@@ -233,6 +237,7 @@ var mainState = {
     game.physics.arcade.collide(dude, enemigos, this.gritar, null, this);
     //game.physics.arcade.overlap(dude, pipes, this.choque, null, this);
     game.physics.arcade.collide(dude, preguntas, this.presentarPregunta, null, this);
+    game.physics.arcade.collide(dude, castillos, this.siguienteNivel, null, this);
 
     if (dude.alive) {
       if (dude.body.touching.down) {
@@ -253,7 +258,7 @@ var mainState = {
       /*if(dude.x <= -this.sizeBloque) {
 				game.state.start('main');
 			}*/
-      if (dude.y >= game.height + this.sizeBloque || dude.x <= -100) {
+      if (dude.y >= game.height + this.sizeBloque || dude.x <= -100 || this.maxScratches == 0) {
         musica.pause();
         //alert("PERRUNOS QUE INTENTARON MORDER A NUESTRO HEROE: "+enemigosDerrotados);
     //    this.scene.pause("main")
@@ -268,10 +273,8 @@ var mainState = {
         });
           botonSalir.inputEnabled = true;
           botonSalir.events.onInputDown.add(function(){
-            location.reload()
-          });
-
-		
+            location.reload();
+          })		
 	}
     }
   },
@@ -326,6 +329,9 @@ var mainState = {
     game.paused = true;
     window.setTimeout(this.seguirjugando, 10000);
     
+  },
+  siguienteNivel: function (dudee, castillos) {
+    game.paused = true;
   },
   seguirjugando: function () {
     //update our stats
