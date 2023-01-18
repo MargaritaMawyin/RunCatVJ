@@ -13,18 +13,20 @@ var dude,
   musicaFinal,
   enemigosDerrotados,
   flag = 0,
-  preguntasArriba = 1,
-  preguntasAbajo = 1,
+  preguntasArriba = 5,
+  preguntasAbajo = 5,
   castillos,
   numeroAB = 1,
   numeroA = 1 , 
   nivel = 1,
  imagen;
 var mapa = [
-  1,1,1,1,1,1,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,1,1,1,3,1,1,4,4,4,4
-  ,4,4,5,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,1,1,1,1,7,1,1,
-  4,4,4,4,4,4,4,2,2,2,2,1,1,1,1,2,2,2,2,1,1,1,2,2,2,2,1,1,2,2,2,1,1,3,
-  1,1,4,4,4,4,4,4,5,1,1,1,1,1,1,1,1,1,1,1,6,1,1,1,1,1,1,1,1
+  1,1,1,1,1,1,0,0,1,1,1,2,2,2,1,1,1,2,2,2,1,1,1,1,1,1,3
+  ,1,1,4,4,4,4,4,4,5,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1
+  ,0,0,1,1,1,1,1,1,7,1,1,4,4,4,4,4,4,4,2,2,2,2,1,1,1,1,2,2,2,2,1,1,1,2,2,2,2,1,1,2,2,2,1,1,3,1,1,4,4,4,4,4,4,5,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,1,0,0,1,1,1,2,2,2,2,1,1,1,7,1,1,1,1,4,4,4,4,2,2,2,2,2,2,1,1,1,1,1,1,2,2,2,0,0,2,2,2,0,0,2,2,2,0,0,1,1,1,1,2,2,2,2,2,2,2,2,0,0,1,1,3,1,1,1,4,4,4,4,4,4,4,5,1,1,0,2,2,0,0,2,2,2,2,0,2,2,2,2,2,2,2,1,1,0,0,1,1,0,1,7,0,1,1,4,4,4,2,0,0,4,4,0,0,2,4,4,0,1,1,1,1,1,1,4,1,4,1,4,1,2,2,2,2,1,1,1,1,1,3,1,1,4,4,4,4,4,4,4,5,1,1,1,1,1,1,1,1,2,2,1,1,1,1,4,7,1,1,4,4,0,0,2,2,2,1,1,1,1,1,1,1,1,0,0,1,1,0,0,1,2,2,0,2,4,1,1,0,1,1,1,0,1,1,1,1,1,1,0,1,3,1,1,4,1,1,4,4,2,2,2,2,4,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,2,2,2,2,0,1,1,1,0,1,2,2,2,0,2,2,2,1,1,0,0,1,1,1,1,1,7,1,1,1,4,4,4,0,0,1,4,4,4,2,2,1,1,1,1,1,1,1,1,3,1,4,4,4,4,4,4,5,1,1,1,4,2,2,1,1,1,6,1,1,1,1
+
+
+
 
 ];
 var mainState = {
@@ -52,14 +54,17 @@ var mainState = {
     game.load.image("inicio","/assets/Inicio/fondo.png");
     game.load.image("bttS","/assets/Inicio/inicia.png");
     game.load.image("bttR","/assets/Inicio/regla.png");
-    for (var i = 1; i <=preguntasArriba; ++i) {
-      var preguntaA = "preguntaA"+preguntasArriba;
-      var direccion =  "/assets/preguntas/arriba/pregunta"+preguntasArriba+".png"
+
+    for (var i = 1; i <=preguntasArriba; i++) {
+      var preguntaA = "preguntaA"+i;
+      var direccion =  "/assets/preguntas/arriba/pregunta"+i+".png"
       game.load.image(preguntaA,direccion);
+
+
     }
-    for (var i = 1; i <=preguntasAbajo; ++i) {
-      var preguntaAB = "preguntaAB"+preguntasAbajo;
-      var direccion =  "/assets/preguntas/abajo/pregunta"+preguntasAbajo+".png"
+    for (var i = 1; i <=preguntasAbajo; i++) {
+      var preguntaAB = "preguntaAB"+i;
+      var direccion =  "/assets/preguntas/abajo/pregunta"+i+".png"
       game.load.image(preguntaAB,direccion);
 
     }
