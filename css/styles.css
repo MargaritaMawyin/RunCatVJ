@@ -36,10 +36,16 @@
     display: block;
     position:relative;
 }
+
 #regla {
     text-align: center;
     display: block;
     position:relative;
+}
+
+#gameReglas{
+    background: url(../assets/reglas/Comojugar.png);
+
 }
 
 
