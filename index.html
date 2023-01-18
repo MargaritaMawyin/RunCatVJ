@@ -16,28 +16,27 @@
 		document.getElementById('gamecontainer').style.display = 'none';
 		game.state.start('main');
 	}
+	function reglas(){
+		document.getElementById('gamecontainer').style.display = 'none';
+		document.getElementById('gameReglas').style.display ='block';
+	}
 </script>
 
 <body class="game">
-	<div id="gamecontainer">
-		<canvas
-		class="gamelayer"
-		id="gamecanvas"
-		width="1306"
-		height="700"
-		></canvas>
+<div id="gamecontainer">
+		<canvas class="gamelayer" id="gamecanvas" width="1306" height="700"></canvas>
 	<div class="gamelayer" id="loadingGame">
-			<img src="assets/Inicio/inicia.png" alt="Play Game"
-			onclick="comenzar()" />
-
-		</div>
-	<div class="gamelayer" id="regla">
-			<img src="assets/Inicio/regla.png" alt="regla"
-			onclick="comenzar()" />
-
-		</div>
-	
+		<img src="assets/Inicio/inicia.png" alt="Play Game" onclick="comenzar()" />
 	</div>
+	<div class="gamelayer" id="regla">
+		<img src="assets/Inicio/regla.png" alt="regla" onclick="reglas()" />
+	</div>
+	<div class="gamelayer" id="gameReglas">
+
+	</div>
+	
+</div>
+	
 
 	
 	
