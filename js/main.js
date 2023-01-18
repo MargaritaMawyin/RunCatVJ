@@ -357,22 +357,27 @@ var mainState = {
   },
   presentarPreguntaAB: function (dudee, caja) {
     caja.destroy();
-    var nombre = "preguntaAB"+ numeroAB;
+    let  numero
+    let  min = Math.ceil(1);
+    let  max = Math.floor(preguntasAbajo);
+    numero = Math.floor(Math.random() * (max - min + 1) + min);
+    var nombre = "preguntaAB"+ numero;
     imagen = game.add.sprite(70, 100,nombre);
     imagen.scale.setTo(0.9, 0.9);
     game.paused = true;
     window.setTimeout(this.seguirjugando, 10000);
-    numeroAB++;
   },
   presentarPreguntaA: function (dudee, caja) {
     caja.destroy();
-    var nombre = "preguntaA"+ numeroA;
+    let  numero
+    let  min = Math.ceil(1);
+    let  max = Math.floor(preguntasArriba);
+    numero = Math.floor(Math.random() * (max - min + 1) + min);
+    var nombre = "preguntaA"+ numero;
     imagen = game.add.sprite(70, 100,nombre);
     imagen.scale.setTo(0.9, 0.9);
     game.paused = true;
-    window.setTimeout(this.seguirjugando, 10000);
-    numeroA++;
-    
+    window.setTimeout(this.seguirjugando, 10000);    
   },
   siguienteNivel: function (dudee, castillos) {
     game.paused = true;
