@@ -8,7 +8,7 @@ var dude,
   preguntasA,
   musica,
   saltarM,
-  GKey,
+  space,
   cayendoM,
   musicaFinal,
   enemigosDerrotados,
@@ -242,16 +242,16 @@ var mainState = {
 
     //controles
     //cursos para saltar
-    var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    spaceKey.onDown.add(this.saltar, this);
+    var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    upKey.onDown.add(this.saltar, this);
     //cursor para bajar rapido
     var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     downKey.onDown.add(this.bajar, this);
     // poderoso
-    GKey = game.input.keyboard.addKey(Phaser.Keyboard.G);
-    // GKey.onDown.add(this.camuflar, this);
+    spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    // space.onDown.add(this.camuflar, this);
 
-    // GKey.isDown.add(this.poderoso, this);
+    // space.isDown.add(this.poderoso, this);
     // game.physics.arcade.collide(dude, enemigos, this.gritar, null, this);
 
     //mensaje de vidas
@@ -268,10 +268,14 @@ var mainState = {
     this.fondoJuego.tilePosition.x -= 0.05;
     game.physics.arcade.collide(dude, suelo);
     game.physics.arcade.collide(dude, obstaculos);
-    if (!GKey.isDown) {
-      console.log(GKey.isDown);
+    if (!spaceKey.isDown) {
+      console.log(spaceKey.isDown);
+      dude.alpha = 1
       game.physics.arcade.collide(dude, enemigos, this.gritar, null, this);
     } 
+    else{
+      dude.alpha = 0.5
+    }
     
     game.physics.arcade.collide(
       dude,
@@ -353,7 +357,7 @@ var mainState = {
 
   saltar: function () {
     if (dude.alive == false) return;
-    dobleJumpKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    dobleJumpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
 
     if (dobleJumpKey.isDown || dude.body.touching.down) {
       dude.body.velocity.y = -550;
@@ -404,8 +408,8 @@ var mainState = {
     game.paused = true;
     // window.setTimeout(this.seguirjugando, 10000);
     //
-    var enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-    enterKey.onDown.add(this.seguirjugando, this);
+    var rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+    rightKey.onDown.add(this.seguirjugando, this);
   },
   presentarPreguntaA: function (dudee, caja) {
     caja.destroy();
