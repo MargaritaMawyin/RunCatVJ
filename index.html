@@ -18,6 +18,7 @@
 <script>
 	function comenzar(){
 		document.getElementById('gamecontainer').style.display = 'none';
+		document.getElementById('rugles').style.display = 'none';
 		game.state.start('main');
 	}
 	function reglas(){
@@ -25,8 +26,7 @@
 		contenido.style.display = 'none'
 		contenedorreglas = document.querySelector(".reglas");
 		canvas = document.querySelector("canvas");
-		console.log("canvas",canvas)
-		canvas.style.display = 'none'
+		console.log("canvas",canvas)		
 		carrusel = `<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
 						<div class="carousel-inner">							
 							<a href="javascript:location.reload()" class="salir sobreponer">
@@ -64,7 +64,7 @@
 			<img src="assets/Inicio/regla.png" alt="regla" onclick="reglas()" />
 		</div>	
 	</div>
-	<div class="reglas">
+	<div id="rugles" class="reglas">
 
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>	
