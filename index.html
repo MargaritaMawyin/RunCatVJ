@@ -7,6 +7,10 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="initial-scale=1.0" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/styles.css" />
+
+	<!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
 	<script type="text/javascript" src="js/phaser.min.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 </head>
@@ -17,28 +21,49 @@
 		game.state.start('main');
 	}
 	function reglas(){
-		document.getElementById('gamecontainer').style.display = 'none';
-	
+		contenido = document.getElementById('gamecontainer');
+		contenido.style.display = 'none'
+		contenedorreglas = document.querySelector(".reglas");
+		canvas = document.querySelector("canvas");
+		console.log("canvas",canvas)
+		canvas.style.display = 'none'
+		carrusel = `<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+						<div class="carousel-inner">
+							<div class="carousel-item active">
+								<img class="d-block w-100" src="assets/reglas/Comojugar.png" alt="First slide" loading="lazy">
+							</div>
+							<div class="carousel-item">
+								<img class="d-block w-100" src="assets/reglas/Comojugar2.png" loading="lazy">
+							</div>
+							<div class="carousel-item">
+								<img class="d-block w-100" src="assets/reglas/Controles.png" loading="lazy">
+							</div>
+						</div>
+						<a href="javascript:location.reload()" class="carousel-control-prev" type="button">							
+							
+						</a>
+						<a href="" class="carousel-control-next" type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide="next">							
+							<span class="sr-only">Next</span>
+						</a>
+					</div>
+				`
+		contenedorreglas.innerHTML = carrusel
 	}
 </script>
 
 <body class="game">
-<div id="gamecontainer">
+	<div id="gamecontainer">
 		<canvas class="gamelayer" id="gamecanvas" width="1306" height="700"></canvas>
-	<div class="gamelayer" id="loadingGame">
-		<img src="assets/Inicio/inicia.png" alt="Play Game" onclick="comenzar()" />
+		<div class="gamelayer" id="loadingGame">
+			<img src="assets/Inicio/inicia.png" alt="Play Game" onclick="comenzar()" />
+		</div>
+		<div class="gamelayer" id="regla">
+			<img src="assets/Inicio/regla.png" alt="regla" onclick="reglas()" />
+		</div>	
 	</div>
-	<div class="gamelayer" id="regla">
-		<img src="assets/Inicio/regla.png" alt="regla" onclick="reglas()" />
-	</div>	
-</div>
-	
+	<div class="reglas">
 
-	
-	
-</div>
-	
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>	
 </body>
 </html>
-
-

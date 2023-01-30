@@ -48,6 +48,11 @@
 
 }
 
+.reglas{
+    width: 85%;
+    padding-bottom: 100px;
+}
 
-
-
+body {
+    overflow: hidden; /* Hide scrollbars */
+  }
