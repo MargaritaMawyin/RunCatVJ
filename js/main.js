@@ -20,6 +20,7 @@ var dude,
   numeroA = 1,
   nivel = 1,
   imagen;
+
 var mapa = [
   1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1,
   3, 1, 1, 4, 4, 4, 4, 4, 4, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0,
@@ -40,6 +41,7 @@ var mapa = [
   4, 0, 0, 1, 4, 4, 4, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 4, 4, 4, 4, 4, 4, 5,
   1, 1, 1, 4, 2, 2, 1, 1, 1, 6, 1, 1, 1, 1,
 ];
+
 var mainState = {
   preload: function () {
     if (!game.device.desktop) {
@@ -367,6 +369,7 @@ var mainState = {
     saltarM = game.add.audio("jump");
     saltarM.play();
   },
+
   bajar: function () {
     dude.body.velocity.y = 600;
   },
@@ -396,6 +399,7 @@ var mainState = {
     this.refreshStats();
     //update our stats
   },
+
   presentarPreguntaAB: function (dudee, caja) {
     caja.destroy();
     let numero;
@@ -411,6 +415,7 @@ var mainState = {
     var rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
     rightKey.onDown.add(this.seguirjugando, this);
   },
+
   presentarPreguntaA: function (dudee, caja) {
     caja.destroy();
     let numero;
@@ -423,15 +428,18 @@ var mainState = {
     game.paused = true;
     window.setTimeout(this.seguirjugando, 10000);
   },
+
   siguienteNivel: function (dudee, castillos) {
     game.paused = true;
   },
+
   seguirjugando: function () {
     //update our stats
     imagen.destroy();
     game.paused = false;
-  },
+  }
 };
 
 game.state.add("main", mainState);
+
 //game.state.start('main');

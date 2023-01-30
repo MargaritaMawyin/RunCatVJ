@@ -48,6 +48,30 @@
 
 }
 
+.reglas{
+    width: 85%;
+    padding-bottom: 100px;
+}
 
+body {
+    overflow: hidden; /* Hide scrollbars */
+  }
+.sobreponer{
+    position:absolute;  
+    z-index: 1;
+}
 
+.siguiente{
+    bottom: 40px !important;
+    right : 40px !important;
+}
 
+.anterior{
+    bottom: 40px;
+    left : 40px;
+}
+
+.salir{
+    top: 40px;
+    left : 40px;
+}
