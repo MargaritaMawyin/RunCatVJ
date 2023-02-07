@@ -102,7 +102,7 @@ var mainState = {
   },
 
   create: function () {
-    this.cont= 0;
+    this.cont = 0;
     document.getElementById("loadingGame").style.display = "none";
     var bloqueSuelo;
     var bloqueSuelo2;
@@ -256,46 +256,42 @@ var mainState = {
     // poderoso
     spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     // space.onDown.add(this.camuflar, this);
-  
+
     //mensaje de vidas
     var style1 = { font: "20px Arial", fill: "#ff0" };
-    var t1 = this.game.add.text(10, 20, "Vidas:", style1);
+    var t1 = this.game.add.text(10, 20, "Vidas:     /5", style1);
     t1.fixedToCamera = true;
-    var style2 = { font: "26px Arial", fill: "#00ff00" };
-    this.pointsText = this.game.add.text(80, 18, "", style2);
-//ESQUIVAR AL PERRO
+    var style2 = { font: "20px Arial", fill: "#00ff00" };
+    this.pointsText = this.game.add.text(80, 20, "", style2);
+    //ESQUIVAR AL PERRO
     var style3 = { font: "20px Arial", fill: "#ff0" };
-    var t2 = this.game.add.text(10, 50, "Esquivar al perro:", style3);
+    var t2 = this.game.add.text(10, 50, "Esquivar al perro:    /5", style3);
     t2.fixedToCamera = true;
-    var style4 = { font: "26px Arial", fill: "#00ff00" };
-    this.camuflajeText = this.game.add.text(180, 48, "", style4);
+    var style4 = { font: "20px Arial", fill: "#00ff00" };
+    this.camuflajeText = this.game.add.text(177, 50, "", style4);
 
     this.refreshStats();
     this.pointsText.fixedToCamera = true;
     this.camuflajeText.fixedToCamera = true;
-
-   
-         
   },
 
   update: function () {
-    
     this.fondoJuego.tilePosition.x -= 0.05;
     game.physics.arcade.collide(dude, suelo);
     game.physics.arcade.collide(dude, obstaculos);
     if (!spaceKey.isDown) {
       console.log(spaceKey.isDown);
-      // console.log("NO SPACE");
       dude.alpha = 1;
       game.physics.arcade.collide(dude, enemigos, this.gritar, null, this);
-    } else if(spaceKey.justDown) {
-      dude.alpha = 0.5;
-      console.log("SPACE");
-      this.cont += 1;
-      this.transparencia++;
-      this.refreshStats();
-      console.log(this.cont);
-      // console.log(this.contador);
+    } else if (spaceKey.justDown && this.transparencia<5) {
+      
+        dude.alpha = 0.5;
+        this.cont++
+        this.transparencia++;
+        this.refreshStats();
+        console.log('T' ,this.transparencia);
+        console.log(this.cont);
+      
     }
 
     game.physics.arcade.collide(
@@ -344,8 +340,7 @@ var mainState = {
       if (
         dude.y >= game.height + this.sizeBloque ||
         dude.x <= -100 ||
-        this.scratches == 5 ||
-        this.transparencia ==5
+        this.scratches == 5 
       ) {
         musica.pause();
         var imagen = game.add.sprite(0, 0, "gameOver");
@@ -358,7 +353,6 @@ var mainState = {
           //game.state.start('main');
 
           game.state.start("main", mainState);
-
         });
         botonSalir.inputEnabled = true;
         botonSalir.events.onInputDown.add(function () {
@@ -373,11 +367,10 @@ var mainState = {
     console.log(this.maxScratches);
     this.pointsText.text = this.maxScratches - this.scratches;
 
-
-    this.camuflajeText.text = this.maxCamuflaje - this.transparencia;
-    console.log(this.camuflajeText)
-    console.log(this.maxCamuflaje)
-    console.log(this.transparencia)
+    this.camuflajeText.text = this.maxCamuflaje - this.transparencia ;
+    console.log(this.camuflajeText);
+    console.log(this.maxCamuflaje);
+    console.log(this.transparencia);
   },
   // camuflar: function () {
   //   if (!dude.alive ) return;
