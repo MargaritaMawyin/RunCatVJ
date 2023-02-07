@@ -19,12 +19,16 @@ var dude,
   numeroAB = 1,
   numeroA = 1,
   nivel = 1,
+  count = 0,
+  jumpActiveCount = 0,
   imagen;
 
 var mapa = [1, 1, 1, 1, 1, 1];
 
 var mainState = {
   preload: function () {
+    jumpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    jumpSound = game.add.audio("jump");
     if (!game.device.desktop) {
       game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
       game.scale.setMinMax(
@@ -79,14 +83,18 @@ var mainState = {
 
     game.load.audio("musicaFondo", "assets/sonidos/opcion1.wav");
     game.load.audio("gameFondo", ["assets/sonidos/gameover.mp3"]);
+    
   },
 
   create: function () {
+    this.cont = 0;
     document.getElementById("loadingGame").style.display = "none";
     var bloqueSuelo;
     var bloqueSuelo2;
     this.scratches = 0;
+    this.transparencia = 0;
     this.maxScratches = 5;
+    this.maxCamuflaje = 5;
     enemigosDerrotados = 0;
     //atributos del juego
     this.sizeBloque = 70;
@@ -208,13 +216,13 @@ var mainState = {
     console.log(dude);
     //dude.body.bounce.y = 0.2;
     dude.body.gravity.y = 1000;
-
+    // dude.setCollideWorldBounds(true);
     //game.camera.follow(dude);
     //dude.body.collideWorldBounds = true;
     dude.animations.add("yell", [0, 1, 2, 3, 4, 5, 6, 7], true);
     dude.animations.add("right", [0, 1, 2, 3, 4, 5, 6, 7], 15, true);
     dude.animations.add("up", [8, 9, 8], true); //para el salto
-    dude.animations.add("g", [ 17, 18, 19], 8, true); //para el camuflaje
+    dude.animations.add("g", [17, 18, 19], 8, true); //para el camuflaje
 
     // dude.animations.play("right");
 
@@ -225,8 +233,7 @@ var mainState = {
 
     //controles
     //cursos para saltar
-    var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-    upKey.onDown.add(this.saltar, this);
+    jumpKey.onDown.add(this.jumpActions, this);
     //cursor para bajar rapido
     var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     downKey.onDown.add(this.bajar, this);
@@ -234,17 +241,22 @@ var mainState = {
     spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     // space.onDown.add(this.camuflar, this);
 
-    // space.isDown.add(this.poderoso, this);
-    // game.physics.arcade.collide(dude, enemigos, this.gritar, null, this);
-
     //mensaje de vidas
     var style1 = { font: "20px Arial", fill: "#ff0" };
-    var t1 = this.game.add.text(10, 20, "Vidas:", style1);
+    var t1 = this.game.add.text(10, 20, "Vidas:     /5", style1);
     t1.fixedToCamera = true;
-    var style2 = { font: "26px Arial", fill: "#00ff00" };
-    this.pointsText = this.game.add.text(80, 18, "", style2);
+    var style2 = { font: "20px Arial", fill: "#00ff00" };
+    this.pointsText = this.game.add.text(80, 20, "", style2);
+    //ESQUIVAR AL PERRO
+    var style3 = { font: "20px Arial", fill: "#ff0" };
+    var t2 = this.game.add.text(10, 50, "Esquivar al perro:    /5", style3);
+    t2.fixedToCamera = true;
+    var style4 = { font: "20px Arial", fill: "#00ff00" };
+    this.camuflajeText = this.game.add.text(177, 50, "", style4);
+
     this.refreshStats();
     this.pointsText.fixedToCamera = true;
+    this.camuflajeText.fixedToCamera = true;
   },
 
   update: function () {
@@ -252,14 +264,17 @@ var mainState = {
     game.physics.arcade.collide(dude, suelo);
     game.physics.arcade.collide(dude, obstaculos);
     if (!spaceKey.isDown) {
-      console.log(spaceKey.isDown);
-      dude.alpha = 1
+      dude.alpha = 1;
       game.physics.arcade.collide(dude, enemigos, this.gritar, null, this);
-    } 
-    else{
-      dude.alpha = 0.5
+    } else if (spaceKey.justDown && this.transparencia < 5) {
+      dude.alpha = 0.5;
+      this.cont++;
+      this.transparencia++;
+      this.refreshStats();
+      console.log("T", this.transparencia);
+      console.log(this.cont);
     }
-    
+
     game.physics.arcade.collide(
       dude,
       preguntasAB,
@@ -285,10 +300,12 @@ var mainState = {
 
     if (dude.alive) {
       if (dude.body.touching.down) {
+        jumpActiveCount = 0;
         game.add.tween(dude).to({ angle: -0 }, 100).start();
         dude.body.velocity.x = -this.nivelVelocidad;
-        if (flag == 0) {dude.animations.play("right"); }
-        else dude.animations.play("yell");
+        if (flag == 0) {
+          dude.animations.play("right");
+        } else dude.animations.play("yell");
       } else {
         dude.body.velocity.x = 5;
         // dude.animations.stop();
@@ -300,8 +317,8 @@ var mainState = {
 
       //restart the game if reaching the edge
       /*if(dude.x <= -this.sizeBloque) {
-				game.state.start('main');
-			}*/
+        game.state.start('main');
+      }*/
       if (
         dude.y >= game.height + this.sizeBloque ||
         dude.x <= -100 ||
@@ -314,23 +331,29 @@ var mainState = {
 
         botonReiniciar.inputEnabled = true;
         botonReiniciar.events.onInputDown.add(function () {
-          game.state.start("main");
+          // game.state.start("main");
+          //game.state.start('main');
+
+          game.state.start("main", mainState);
         });
         botonSalir.inputEnabled = true;
         botonSalir.events.onInputDown.add(function () {
           location.reload();
         });
       }
+      
     }
   },
 
   refreshStats: function () {
-    console.log(this.pointsText)
-    console.log(this.maxScratches)
+    console.log(this.pointsText);
+    console.log(this.maxScratches);
     this.pointsText.text = this.maxScratches - this.scratches;
-    console.log(this.pointsText)
-    console.log(this.maxScratches)
-    console.log(this.scratches)
+
+    this.camuflajeText.text = this.maxCamuflaje - this.transparencia;
+    console.log(this.camuflajeText);
+    console.log(this.maxCamuflaje);
+    console.log(this.transparencia);
   },
   // camuflar: function () {
   //   if (!dude.alive ) return;
@@ -338,17 +361,17 @@ var mainState = {
   //   dude.animations.play("g");
   // },
 
-  saltar: function () {
-    if (dude.alive == false) return;
-    dobleJumpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+  jump: function () {
+    dude.body.velocity.y = -550;
+  },
 
-    if (dobleJumpKey.isDown || dude.body.touching.down) {
-      dude.body.velocity.y = -550;
-      game.add.tween(dude).to({ angle: -20 }, 100).start();
-    }
-
-    saltarM = game.add.audio("jump");
-    saltarM.play();
+  jumpActions: function () {
+    jumpActiveCount++;
+    if (!dude.alive || jumpActiveCount > 2) return;
+    
+    this.jump();
+    console.log(jumpSound)
+    jumpSound.play();
   },
 
   bajar: function () {
@@ -418,7 +441,7 @@ var mainState = {
     //update our stats
     imagen.destroy();
     game.paused = false;
-  }
+  },
 };
 /*
 hoyo:0 -- piso:	1 -- hoyo + caja: 2 -- pregunta camino bajo: 3 -- piso + caja: 4 -- piso + caja infinita: 5 -- castillo: 6 -- pregunta camino alto: 7
