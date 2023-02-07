@@ -20,6 +20,7 @@ var dude,
   numeroA = 1,
   nivel = 1,
   count = 0,
+  jumpActiveCount = 0,
   imagen;
 
 var mapa = [
@@ -45,6 +46,8 @@ var mapa = [
 
 var mainState = {
   preload: function () {
+    jumpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    jumpSound = game.add.audio("jump");
     if (!game.device.desktop) {
       game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
       game.scale.setMinMax(
@@ -99,6 +102,7 @@ var mainState = {
 
     game.load.audio("musicaFondo", "assets/sonidos/opcion1.wav");
     game.load.audio("gameFondo", ["assets/sonidos/gameover.mp3"]);
+    
   },
 
   create: function () {
@@ -248,8 +252,7 @@ var mainState = {
 
     //controles
     //cursos para saltar
-    var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-    upKey.onDown.add(this.saltar, this);
+    jumpKey.onDown.add(this.jumpActions, this);
     //cursor para bajar rapido
     var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     downKey.onDown.add(this.bajar, this);
@@ -280,18 +283,15 @@ var mainState = {
     game.physics.arcade.collide(dude, suelo);
     game.physics.arcade.collide(dude, obstaculos);
     if (!spaceKey.isDown) {
-      console.log(spaceKey.isDown);
       dude.alpha = 1;
       game.physics.arcade.collide(dude, enemigos, this.gritar, null, this);
-    } else if (spaceKey.justDown && this.transparencia<5) {
-      
-        dude.alpha = 0.5;
-        this.cont++
-        this.transparencia++;
-        this.refreshStats();
-        console.log('T' ,this.transparencia);
-        console.log(this.cont);
-      
+    } else if (spaceKey.justDown && this.transparencia < 5) {
+      dude.alpha = 0.5;
+      this.cont++;
+      this.transparencia++;
+      this.refreshStats();
+      console.log("T", this.transparencia);
+      console.log(this.cont);
     }
 
     game.physics.arcade.collide(
@@ -319,6 +319,7 @@ var mainState = {
 
     if (dude.alive) {
       if (dude.body.touching.down) {
+        jumpActiveCount = 0;
         game.add.tween(dude).to({ angle: -0 }, 100).start();
         dude.body.velocity.x = -this.nivelVelocidad;
         if (flag == 0) {
@@ -335,12 +336,12 @@ var mainState = {
 
       //restart the game if reaching the edge
       /*if(dude.x <= -this.sizeBloque) {
-				game.state.start('main');
-			}*/
+        game.state.start('main');
+      }*/
       if (
         dude.y >= game.height + this.sizeBloque ||
         dude.x <= -100 ||
-        this.scratches == 5 
+        this.scratches == 5
       ) {
         musica.pause();
         var imagen = game.add.sprite(0, 0, "gameOver");
@@ -359,6 +360,7 @@ var mainState = {
           location.reload();
         });
       }
+      
     }
   },
 
@@ -367,7 +369,7 @@ var mainState = {
     console.log(this.maxScratches);
     this.pointsText.text = this.maxScratches - this.scratches;
 
-    this.camuflajeText.text = this.maxCamuflaje - this.transparencia ;
+    this.camuflajeText.text = this.maxCamuflaje - this.transparencia;
     console.log(this.camuflajeText);
     console.log(this.maxCamuflaje);
     console.log(this.transparencia);
@@ -378,38 +380,17 @@ var mainState = {
   //   dude.animations.play("g");
   // },
 
-  saltar: function () {
-    var jumping = false;
-    var doubleJumping = false;
-    if (dude.alive == false) return;
+  jump: function () {
+    dude.body.velocity.y = -550;
+  },
 
-    dobleJumpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-
-    // if (dobleJumpKey.isDown || dude.body.touching.down) {
-    //   dude.body.velocity.y = -550;
-    //   game.add.tween(dude).to({ angle: -20 }, 100).start();
-    // }
-
-    if (dobleJumpKey.isDown && jumping === false) {
-      jumping = true;
-      dude.body.velocity.y = -350;
-    }
-
-    if (jumping === true && doubleJumping === false) {
-      if (dobleJumpKey.isDown) {
-        doubleJumping = true;
-        jumping = false;
-        dude.body.velocity.y = -350;
-      }
-    }
-
-    if (dude.body.touching.down) {
-      jumping = false;
-      doubleJumping = false;
-    }
-
-    saltarM = game.add.audio("jump");
-    saltarM.play();
+  jumpActions: function () {
+    jumpActiveCount++;
+    if (!dude.alive || jumpActiveCount > 2) return;
+    
+    this.jump();
+    console.log(jumpSound)
+    jumpSound.play();
   },
 
   bajar: function () {
