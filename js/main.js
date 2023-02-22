@@ -21,14 +21,40 @@ var dude,
   nivel = 1,
   count = 0,
   jumpActiveCount = 0,
+  soundActive = false,
+  audioContext = new AudioContext(),
+  microphone = null,
+  analyzer = null,
+  soundThreshold = 12,
+  dogActive = null,
+  t3,
+  killedByVoice =0,
   imagen;
 
 var mapa = [1, 1, 1, 1, 1, 1];
 
 var mainState = {
   preload: function () {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(function(stream) {
+      console.log("Acceso al micrófono concedido");
+      soundActive = true;
+      navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(function(stream) {
+        microphone = audioContext.createMediaStreamSource(stream);
+        analyzer = audioContext.createAnalyser();
+        microphone.connect(analyzer);
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+    })
+    .catch(function(err) {
+      alert("No se puede acceder al micrófono, por favor permita el acceso a su micrófono")
+    });
     jumpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     jumpSound = game.add.audio("jump");
+    shoutKey = game.input.keyboard.addKey(Phaser.Keyboard.G);
     if (!game.device.desktop) {
       game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
       game.scale.setMinMax(
@@ -257,6 +283,12 @@ var mainState = {
     var style4 = { font: "20px Arial", fill: "#00ff00" };
     this.camuflajeText = this.game.add.text(177, 50, "", style4);
 
+    // SHOUTING THRESHOLD USING ASCII ART
+
+    if (soundActive){
+      t3 = this.game.add.text(10, 80, "Voz para asustar perros: □", style1);
+      t3.fixedToCamera = true;
+    }
     //recordatorio de reglas
     var reglas = { font: "14px Arial", fill: "#00ff00" };
     var text = this.game.add.text(450, 10, "Comandos:", reglas);
@@ -327,6 +359,26 @@ var mainState = {
     );
 
     if (dude.alive) {
+      if (soundActive && shoutKey.isDown) {
+        if (analyzer) {
+          t3.setText(`Voz para asustar perros: ${"■".repeat(killedByVoice+1)}`);
+          var dataArray = new Uint8Array(analyzer.frequencyBinCount);
+          analyzer.getByteFrequencyData(dataArray);
+          var total = 0;
+          for (var i = 0; i < dataArray.length; i++) {
+            total += dataArray[i];
+          }
+          var average = total / dataArray.length;
+          console.log(average);
+          if (average > soundThreshold*(killedByVoice+1)) {
+            if (dogActive) {
+              dogActive.kill();
+              dogActive = null;
+              killedByVoice++;
+            }
+          }
+        }
+      }
       if (dude.body.touching.down) {
         jumpActiveCount = 0;
         game.add.tween(dude).to({ angle: -0 }, 100).start();
@@ -415,12 +467,19 @@ var mainState = {
       game.height - this.sizeBloque - 55,
       "perrito"
     );
+    dogActive = perro;
     enemigos.add(perro);
     game.physics.arcade.enable(perro);
     perro.body.velocity.x = this.nivelVelocidad - 100;
     perro.animations.add("left", [2, 1, 0, 5, 4, 3, 8, 7, 6], 15, true);
     perro.animations.play("left");
     perro.scale.setTo(0.8, 0.8);
+    perro.checkWorldBounds = true;
+    perro.outOfBoundsKill = true;
+    perro.events.onOutOfBounds.add(function () {
+      dogActive = null;
+    })
+    
   },
 
   gritar: function (dude, enemigos) {
