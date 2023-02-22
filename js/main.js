@@ -21,7 +21,8 @@ var dude,
   nivel = 1,
   count = 0,
   jumpActiveCount = 0,
-  imagen;
+  imagen,
+  pocion;
 
 var mapa = [1, 1, 1, 1, 1, 1];
 
@@ -74,6 +75,7 @@ var mainState = {
     //game.load.image('reloj', 'assets/reloj.png');
     game.load.spritesheet("reloj", "assets/caja1.png", 70, 70);
     game.load.spritesheet("pregunta", "assets/pregunta.png", 70, 70);
+    game.load.image("pocion", "assets/pocion.png", 74, 54);
     game.load.spritesheet("pilaCaja", "assets/pilaCaja.png", 70, 420);
 
     game.load.spritesheet("perrito", "assets/DogRun.png", 122, 65); // 128.67, 70
@@ -104,6 +106,8 @@ var mainState = {
     this.probMoreVertical = 0.5;
 
     musica = game.add.audio("musicaFondo");
+    // musica = this.sound.add('musicaFondo', { loop: true });
+
     musica.play();
 
     //agregar fondo al juego
@@ -120,6 +124,7 @@ var mainState = {
     suelo = game.add.group();
     preguntasAB = game.add.group();
     preguntasA = game.add.group();
+    pocion = game.add.group();
 
     castillos = game.add.group();
     suelo.enableBody = true;
@@ -204,6 +209,18 @@ var mainState = {
           game.physics.arcade.enable(bloqueSuelo);
           bloqueSuelo.body.velocity.x = this.nivelVelocidad;
           break;
+        case 8: // pocion
+        x = i * this.sizeBloque+20;
+        y = this.game.height - this.sizeBloque+10;
+        bloqueSuelo2 = suelo.create(x, y, "bloqueSuelo");
+        bloqueSuelo2.body.immovable = true;
+        bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
+        x = i * this.sizeBloque+20;
+        y = this.game.height - this.sizeBloque * 2+10;
+        bloqueSuelo = game.add.sprite(x, y, "pocion");
+        pocion.add(bloqueSuelo);
+        game.physics.arcade.enable(bloqueSuelo);
+        bloqueSuelo.body.velocity.x = this.nivelVelocidad;
       }
     }
 
@@ -325,6 +342,13 @@ var mainState = {
       null,
       this
     );
+    game.physics.arcade.collide(
+      dude,
+      pocion,
+      this.presentarPocion,
+      null,
+      this
+    );
 
     if (dude.alive) {
       if (dude.body.touching.down) {
@@ -423,6 +447,17 @@ var mainState = {
     perro.scale.setTo(0.8, 0.8);
   },
 
+  agregarPocion: function () {
+    var pocionn = game.add.sprite(
+      game.width,
+      game.height - this.sizeBloque - 55,
+      "pocion"
+    );
+   pocion.add(pocionn);
+    game.physics.arcade.enable(perro);
+   
+    // perro.scale.setTo(0.8, 0.8);
+  },
   gritar: function (dude, enemigos) {
     console.log(dude);
     enemigos.destroy();
@@ -465,7 +500,22 @@ var mainState = {
     var enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
     enterKey.onDown.add(this.seguirjugando, this);
   },
+  
 
+  presentarPocion: function ( pocion) {
+    pocion.destroy();
+    let numero;
+    let min = Math.ceil(1);
+    let max = Math.floor(pocion);
+    numero = Math.floor(Math.random() * (max - min + 1) + min);
+    // var nombre = "preguntaAB" + numero;
+    imagen = game.add.sprite(70, 100, pocion);
+    imagen.scale.setTo(0.9, 0.9);
+    // game.paused = true;
+    // window.setTimeout(this.seguirjugando, 10000);
+    //
+    
+  },
   siguienteNivel: function (dudee, castillos) {
     game.paused = true;
   },
