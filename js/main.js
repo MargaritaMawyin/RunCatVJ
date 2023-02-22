@@ -72,9 +72,9 @@ var mainState = {
     }
     //game.stage.backgroundColor = '#000';
 
-    game.load.image("inicio", "/assets/Inicio/fondo.png");
-    game.load.image("bttS", "/assets/Inicio/inicia.png");
-    game.load.image("bttR", "/assets/Inicio/regla.png");
+    game.load.image("inicio", "assets/Inicio/fondo.png");
+    game.load.image("bttS", "assets/Inicio/inicia.png");
+    game.load.image("bttR", "assets/Inicio/regla.png");
 
     for (var i = 1; i <= preguntasArriba; i++) {
       var preguntaA = "preguntaA" + i;
