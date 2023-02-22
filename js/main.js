@@ -72,42 +72,42 @@ var mainState = {
     }
     //game.stage.backgroundColor = '#000';
 
-    game.load.image("inicio", "/assets/Inicio/fondo.png");
-    game.load.image("bttS", "/assets/Inicio/inicia.png");
-    game.load.image("bttR", "/assets/Inicio/regla.png");
+    game.load.image("inicio", "..../assets/Inicio/fondo.png");
+    game.load.image("bttS", "..../assets/Inicio/inicia.png");
+    game.load.image("bttR", "..../assets/Inicio/regla.png");
 
     for (var i = 1; i <= preguntasArriba; i++) {
       var preguntaA = "preguntaA" + i;
-      var direccion = "/assets/preguntas/arriba/pregunta" + i + ".png";
+      var direccion = "../assets/preguntas/arriba/pregunta" + i + ".png";
       game.load.image(preguntaA, direccion);
     }
     for (var i = 1; i <= preguntasAbajo; i++) {
       var preguntaAB = "preguntaAB" + i;
-      var direccion = "/assets/preguntas/abajo/pregunta" + i + ".png";
+      var direccion = "../assets/preguntas/abajo/pregunta" + i + ".png";
       game.load.image(preguntaAB, direccion);
     }
-    game.load.image("gameOver", "/assets/Game over/Mesa de trabajo 1_2.png");
-    game.load.image("reiniciar", "/assets/Game over/Mesa de trabajo 10_1.png");
-    game.load.image("salir", "/assets/Game over/Mesa de trabajo 10_2.png");
+    game.load.image("gameOver", "../assets/Game over/Mesa de trabajo 1_2.png");
+    game.load.image("reiniciar", "../assets/Game over/Mesa de trabajo 10_1.png");
+    game.load.image("salir", "../assets/Game over/Mesa de trabajo 10_2.png");
     // game.load.spritesheet("dude", "assets/gatoMix.png", 68, 61, 16); //70, 61.25, 16
-    game.load.spritesheet("dude", "assets/megaMix.png", 68, 61, 21);
-    game.load.image("fondo", "assets/City2.jpg");
-    game.load.image("bloqueSuelo", "assets/pared.png");
-    game.load.spritesheet("castillo", "assets/castillo.png");
+    game.load.spritesheet("dude", "../assets/megaMix.png", 68, 61, 21);
+    game.load.image("fondo", "../assets/City2.jpg");
+    game.load.image("bloqueSuelo", "../assets/pared.png");
+    game.load.spritesheet("castillo", "../assets/castillo.png");
 
     //game.load.image('reloj', 'assets/reloj.png');
-    game.load.spritesheet("reloj", "assets/caja1.png", 70, 70);
-    game.load.spritesheet("pregunta", "assets/pregunta.png", 70, 70);
-    game.load.image("pocion", "assets/pocion.png", 54,74);
-    game.load.spritesheet("pilaCaja", "assets/pilaCaja.png", 70, 420);
+    game.load.spritesheet("reloj", "../assets/caja1.png", 70, 70);
+    game.load.spritesheet("pregunta", "../assets/pregunta.png", 70, 70);
+    game.load.image("pocion", "../assets/pocion.png", 54,74);
+    game.load.spritesheet("pilaCaja", "../assets/pilaCaja.png", 70, 420);
 
-    game.load.spritesheet("perrito", "assets/DogRun.png", 122, 65); // 128.67, 70
+    game.load.spritesheet("perrito", "../assets/DogRun.png", 122, 65); // 128.67, 70
 
-    game.load.audio("jump", "assets/sonidos/jump.wav");
-    game.load.audio("muere", "assets/sonidos/gatoCayendo.mp3");
+    game.load.audio("jump", "../assets/sonidos/jump.wav");
+    game.load.audio("muere", "../assets/sonidos/gatoCayendo.mp3");
 
-    game.load.audio("musicaFondo", "assets/sonidos/opcion1.wav");
-    game.load.audio("gameFondo", ["assets/sonidos/gameover.mp3"]);
+    game.load.audio("musicaFondo", "../assets/sonidos/opcion1.wav");
+    game.load.audio("gameFondo", ["../assets/sonidos/gameover.mp3"]);
   },
 
   create: function () {
