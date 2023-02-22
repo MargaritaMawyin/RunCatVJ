@@ -21,14 +21,40 @@ var dude,
   nivel = 1,
   count = 0,
   jumpActiveCount = 0,
-  imagen;
+  soundActive = false,
+  audioContext,
+  microphone = null,
+  analyzer = null,
+  soundThreshold = 12,
+  dogActive = null,
+  t3,
+  shoutText,
+  killedByVoice =0,
+  imagen,
+  pocion;
 
 var mapa = [1, 1, 1, 1, 1, 1, 1,];
+navigator.mediaDevices.getUserMedia({ audio: true })
+.then(function(stream) {
+  console.log("Acceso al micrófono concedido");
+  audioContext = new AudioContext();
+  microphone = audioContext.createMediaStreamSource(stream);
+  analyzer = audioContext.createAnalyser();
+  microphone.connect(analyzer)
+
+  soundActive = true;
+})
+.catch(function(err) {
+  alert("No se puede acceder al micrófono, por favor permita el acceso a su micrófono")
+});
 
 var mainState = {
   preload: function () {
+
+    
     jumpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     jumpSound = game.add.audio("jump");
+    shoutKey = game.input.keyboard.addKey(Phaser.Keyboard.G);
     if (!game.device.desktop) {
       game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
       game.scale.setMinMax(
@@ -74,6 +100,7 @@ var mainState = {
     //game.load.image('reloj', 'assets/reloj.png');
     game.load.spritesheet("reloj", "assets/caja1.png", 70, 70);
     game.load.spritesheet("pregunta", "assets/pregunta.png", 70, 70);
+    game.load.image("pocion", "assets/pocion.png", 74, 54);
     game.load.spritesheet("pilaCaja", "assets/pilaCaja.png", 70, 420);
 
     game.load.spritesheet("perrito", "assets/DogRun.png", 122, 65); // 128.67, 70
@@ -105,6 +132,8 @@ var mainState = {
     this.probMoreVertical = 0.5;
 
     musica = game.add.audio("musicaFondo");
+    // musica = this.sound.add('musicaFondo', { loop: true });
+
     musica.play();
 
     //agregar fondo al juego
@@ -121,6 +150,7 @@ var mainState = {
     suelo = game.add.group();
     preguntasAB = game.add.group();
     preguntasA = game.add.group();
+    pocion = game.add.group();
 
     castillos = game.add.group();
     suelo.enableBody = true;
@@ -205,7 +235,20 @@ var mainState = {
           game.physics.arcade.enable(bloqueSuelo);
           bloqueSuelo.body.velocity.x = this.nivelVelocidad;
           break;
-        case 8: //caja mas suelo mas pregunta abajo
+        case 8: // pocion
+          x = i * this.sizeBloque+20;
+          y = this.game.height - this.sizeBloque+10;
+          bloqueSuelo2 = suelo.create(x, y, "bloqueSuelo");
+          bloqueSuelo2.body.immovable = true;
+          bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
+          x = i * this.sizeBloque+20;
+          y = this.game.height - this.sizeBloque * 2+10;
+          bloqueSuelo = game.add.sprite(x, y, "pocion");
+          pocion.add(bloqueSuelo);
+          game.physics.arcade.enable(bloqueSuelo);
+          bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+        
+        case 9: //caja mas suelo mas pregunta abajo
           x = i * this.sizeBloque;
           y = this.game.height - this.sizeBloque * 3;
           bloqueSuelo = suelo.create(x, y, "reloj");
@@ -223,7 +266,7 @@ var mainState = {
           game.physics.arcade.enable(bloqueSuelo3);
           bloqueSuelo3.body.velocity.x = this.nivelVelocidad;
           break;
-        case 9: //caja mas suelo mas pregunta abajo
+        case 10: //caja mas suelo mas pregunta abajo
           x = i * this.sizeBloque;
           y = this.game.height - this.sizeBloque * 3;
           bloqueSuelo = suelo.create(x, y, "reloj");
@@ -294,6 +337,23 @@ var mainState = {
     var style4 = { font: "20px Arial", fill: "#00ff00" };
     this.camuflajeText = this.game.add.text(177, 50, "", style4);
 
+    // SHOUTING THRESHOLD USING ASCII ART
+
+    if (soundActive){
+      t3 = this.game.add.text(10, 80, "Voz para asustar perros: □", style1);
+      t3.fixedToCamera = true;
+    }
+
+    //with alpha 0 it is invisible
+    shoutText = game.add.text(0, game.height - 20, "Presiona G y grita para matar al perro.", {
+
+      font: "20px Arial",
+      fill: "#ffffff",
+      align: "center"
+    });
+    shoutText.alpha = 0;
+
+
     //recordatorio de reglas
     var reglas = { font: "14px Arial", fill: "#00ff00" };
     var text = this.game.add.text(450, 10, "Comandos:", reglas);
@@ -362,8 +422,35 @@ var mainState = {
       null,
       this
     );
+    game.physics.arcade.collide(
+      dude,
+      pocion,
+      this.presentarPocion,
+      null,
+      this
+    );
 
     if (dude.alive) {
+      if (soundActive && shoutKey.isDown) {
+        if (analyzer) {
+          t3.setText(`Voz para asustar perros: ${"■".repeat(killedByVoice+1)}`);
+          var dataArray = new Uint8Array(analyzer.frequencyBinCount);
+          analyzer.getByteFrequencyData(dataArray);
+          var total = 0;
+          for (var i = 0; i < dataArray.length; i++) {
+            total += dataArray[i];
+          }
+          var average = total / dataArray.length;
+          console.log(average);
+          if (average > soundThreshold*(killedByVoice+1)) {
+            if (dogActive) {
+              dogActive.kill();
+              dogActive = null;
+              killedByVoice++;
+            }
+          }
+        }
+      }
       if (dude.body.touching.down) {
         jumpActiveCount = 0;
         game.add.tween(dude).to({ angle: -0 }, 100).start();
@@ -452,17 +539,46 @@ var mainState = {
       game.height - this.sizeBloque - 55,
       "perrito"
     );
+    dogActive = perro;
     enemigos.add(perro);
     game.physics.arcade.enable(perro);
     perro.body.velocity.x = this.nivelVelocidad - 100;
     perro.animations.add("left", [2, 1, 0, 5, 4, 3, 8, 7, 6], 15, true);
     perro.animations.play("left");
     perro.scale.setTo(0.8, 0.8);
+    perro.checkWorldBounds = true;
+    perro.outOfBoundsKill = true;
+
+    game.add.tween(shoutText).to({ alpha: 1 }, 1000).start();
+
+
+    perro.events.onOutOfBounds.add(function () {
+      dogActive = null;
+    })
+  
+    //When dog is destroyed, add remove shoutText
+    perro.events.onKilled.add(function () {
+      game.add.tween(shoutText).to({ alpha: 0 }, 1000).start();
+    });
+    
   },
 
+  agregarPocion: function () {
+    var pocionn = game.add.sprite(
+      game.width,
+      game.height - this.sizeBloque - 55,
+      "pocion"
+    );
+   pocion.add(pocionn);
+    game.physics.arcade.enable(perro);
+   
+    // perro.scale.setTo(0.8, 0.8);
+  },
   gritar: function (dude, enemigos) {
     console.log(dude);
     enemigos.destroy();
+    game.add.tween(shoutText).to({ alpha: 0 }, 1000).start();
+    dogActive = null;
 
     cayendoM = game.add.audio("muere");
     cayendoM.play();
@@ -502,7 +618,22 @@ var mainState = {
     var enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
     enterKey.onDown.add(this.seguirjugando, this);
   },
+  
 
+  presentarPocion: function ( pocion) {
+    pocion.destroy();
+    let numero;
+    let min = Math.ceil(1);
+    let max = Math.floor(pocion);
+    numero = Math.floor(Math.random() * (max - min + 1) + min);
+    // var nombre = "preguntaAB" + numero;
+    imagen = game.add.sprite(70, 100, pocion);
+    imagen.scale.setTo(0.9, 0.9);
+    // game.paused = true;
+    // window.setTimeout(this.seguirjugando, 10000);
+    //
+    
+  },
   siguienteNivel: function (dudee, castillos) {
     game.paused = true;
   },
@@ -547,7 +678,7 @@ function llenarMapa() {
   let pregunta = 1;
   let posiciónPregunta;
   while (large > 0) {
-    let numero = Math.floor(Math.random() * 10);
+    let numero = Math.floor(Math.random() * 11);
     switch (numero) {
       case (0, 1, 2): {
         mapa = mapa.concat([numero, numero]);
