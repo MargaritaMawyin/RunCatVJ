@@ -23,7 +23,7 @@ var dude,
   jumpActiveCount = 0,
   imagen;
 
-var mapa = [1, 1, 1, 1, 1, 1];
+var mapa = [1, 1, 1, 1, 1, 1, 1,];
 
 var mainState = {
   preload: function () {
@@ -90,6 +90,7 @@ var mainState = {
     document.getElementById("loadingGame").style.display = "none";
     var bloqueSuelo;
     var bloqueSuelo2;
+    var bloqueSuelo3;
     this.scratches = 0;
     this.transparencia = 0;
     this.maxScratches = 5;
@@ -203,6 +204,42 @@ var mainState = {
           preguntasA.add(bloqueSuelo);
           game.physics.arcade.enable(bloqueSuelo);
           bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+          break;
+        case 8: //caja mas suelo mas pregunta abajo
+          x = i * this.sizeBloque;
+          y = this.game.height - this.sizeBloque * 3;
+          bloqueSuelo = suelo.create(x, y, "reloj");
+          bloqueSuelo.body.immovable = true;
+          bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+          x = i * this.sizeBloque;
+          y = this.game.height - this.sizeBloque;
+          bloqueSuelo2 = suelo.create(x, y, "bloqueSuelo");
+          bloqueSuelo2.body.immovable = true;
+          bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
+          x = i * this.sizeBloque;
+          y = this.game.height - this.sizeBloque * 4;
+          bloqueSuelo3 = game.add.sprite(x, y, "pregunta");
+          preguntasAB.add(bloqueSuelo3);
+          game.physics.arcade.enable(bloqueSuelo3);
+          bloqueSuelo3.body.velocity.x = this.nivelVelocidad;
+          break;
+        case 9: //caja mas suelo mas pregunta abajo
+          x = i * this.sizeBloque;
+          y = this.game.height - this.sizeBloque * 3;
+          bloqueSuelo = suelo.create(x, y, "reloj");
+          bloqueSuelo.body.immovable = true;
+          bloqueSuelo.body.velocity.x = this.nivelVelocidad;
+          x = i * this.sizeBloque;
+          y = this.game.height - this.sizeBloque;
+          bloqueSuelo2 = suelo.create(x, y, "bloqueSuelo");
+          bloqueSuelo2.body.immovable = true;
+          bloqueSuelo2.body.velocity.x = this.nivelVelocidad;
+          x = i * this.sizeBloque;
+          y = this.game.height - this.sizeBloque * 4;
+          bloqueSuelo3 = game.add.sprite(x, y, "pregunta");
+          preguntasA.add(bloqueSuelo3);
+          game.physics.arcade.enable(bloqueSuelo3);
+          bloqueSuelo3.body.velocity.x = this.nivelVelocidad;
           break;
       }
     }
@@ -477,24 +514,40 @@ var mainState = {
   },
 };
 /*
-hoyo:0 -- piso:	1 -- hoyo + caja: 2 -- pregunta camino bajo: 3 -- piso + caja: 4 -- piso + caja infinita: 5 -- castillo: 6 -- pregunta camino alto: 7
+hoyo:0
+piso:	1
+hoyo + caja: 2
+pregunta camino bajo: 3
+piso + caja: 4
+piso + caja infinita: 5
+castillo: 6
+pregunta camino alto: 7
+piso + caja + camino bajo: 8
+piso + caja + camino alto: 9
 */
 function llenarMapa() {
   let large = 490;
   let caminosAltos = [
+    [1, 1, 1, 4, 4, 4, 2, 2, 0, 0, 0, 2, 2, 4, 4, 0, 0, 0, 2, 2, 2, 2, 4, 4, 0, 0, 4, 4, 0, 0, 2, 2, 4, 8, 4, 4, 4, 2, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 5, 1, 1, 1],
+    [1, 1, 4, 4, 4, 2, 2, 2, 0, 0, 0, 4, 4, 0, 0, 2, 2, 1, 1, 1, 2, 2, 2, 4, 4, 4, 2, 8, 4, 4, 4, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 5, 1, 1, 1],
+    [1, 1, 4, 2, 4, 2, 4, 2, 0, 0, 0, 2, 2, 0, 0, 0, 2, 4, 1, 1, 1, 1, 4, 2, 2, 4, 4, 4, 4, 2, 2, 2, 1, 1, 2, 8, 4, 4, 4, 2, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 5, 1, 1, 1],
+    [1, 1, 1, 4, 4, 4, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 4, 4, 2, 2, 2, 2, 4, 4, 9, 4, 4, 4, 2, 1, 1, 1, 4, 4, 4, 4, 2, 2, 0, 0, 0, 4, 4, 2, 0, 0, 2, 4, 4, 0, 0, 0, 1, 1, 1],
+    [1, 1, 0, 0, 2, 2, 4, 4, 4, 2, 2, 2, 0, 0, 0, 4, 4, 2, 2, 0, 0, 0, 1, 1, 2, 2, 1, 1, 2, 2, 4, 4, 9, 4, 4, 4, 2, 1, 1, 1, 4, 4, 0, 0, 1, 1, 0, 0, 4, 4, 2, 2, 0, 0, 0, , 2, 2, 4, 4, 2, 0, 0, 2, 4, 4, 0, 0, 0, 1, 1, 1],
+    [1, 1, 0, 0, 4, 4, 4, 4, 2, 2, 2, 1, 1, 1, 2, 2, 4, 2, 2, 4, 2, 2, 9, 4, 0, 0, 0, 4, 4, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 0, 0, 2, 4, 4, 0, 0, 0, 1, 1, 1],
     [1, 1, 1, 4, 4, 4, 2, 2, 2, 2, 4, 4, 2, 2, 2, 2, 1, 1, 1],
     [1, 1, 4, 4, 4, 2, 2, 2, 4, 4, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1],
-    [1, 1, 4, 4, 4, 4, 2, 2, 2, 1, 1, 2, 2, 4, 2, 2, 4, 2, 2, 1, 1, 1],
+    [1, 1, 4, 4, 4, 4, 2, 2, 2, 1, 1, 2, 2, 4, 2, 2, 4, 2, 2, 1, 1, 1]
   ];
   let caminosBajos = [
     [1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 5, 1, 1, 0, 0],
     [1, 1, 1, 4, 4, 1, 1, 1, 4, 4, 4, 4, 4, 5],
     [1, 1, 0, 0, 1, 1, 1, 4, 4, 4, 4, 4, 4, 5],
+    [1, 1, 1, 4, 4, 4, 1, 1, 1, 0, 0, 1,4, 4, 4, 4, 5, 1, 1, 0, 0]
   ];
   let pregunta = 1;
   let posiciónPregunta;
   while (large > 0) {
-    let numero = Math.floor(Math.random() * 8);
+    let numero = Math.floor(Math.random() * 10);
     switch (numero) {
       case (0, 1, 2): {
         mapa = mapa.concat([numero, numero]);
@@ -536,6 +589,7 @@ function llenarMapa() {
         }
         break;
       }
+
     }
   }
   mapa = mapa.concat([6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
