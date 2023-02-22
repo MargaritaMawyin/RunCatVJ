@@ -13,8 +13,8 @@ var dude,
   musicaFinal,
   enemigosDerrotados,
   flag = 0,
-  preguntasArriba = 5,
-  preguntasAbajo = 5,
+  preguntasArriba = 23,
+  preguntasAbajo = 25,
   castillos,
   numeroAB = 1,
   numeroA = 1,
@@ -98,7 +98,7 @@ var mainState = {
     //game.load.image('reloj', 'assets/reloj.png');
     game.load.spritesheet("reloj", "assets/caja1.png", 70, 70);
     game.load.spritesheet("pregunta", "assets/pregunta.png", 70, 70);
-    game.load.image("pocion", "assets/pocion.png", 74, 54);
+    game.load.image("pocion", "assets/pocion.png", 54,74);
     game.load.spritesheet("pilaCaja", "assets/pilaCaja.png", 70, 420);
 
     game.load.spritesheet("perrito", "assets/DogRun.png", 122, 65); // 128.67, 70
@@ -338,7 +338,7 @@ var mainState = {
     // SHOUTING THRESHOLD USING ASCII ART
 
     if (soundActive){
-      t3 = this.game.add.text(10, 80, "Voz para asustar perros: □", style1);
+      t3 = this.game.add.text(10, 80, "Voz para asustar perros: : □", style1);
       t3.fixedToCamera = true;
     }
 
@@ -377,6 +377,10 @@ var mainState = {
     var text3 = this.game.add.text(450, 85, "ESQUIVAR AL PERRO : BARRA ESPACIADORA ", regla3);
     text3.fixedToCamera = true;
 
+    var regla6 = { font: "12px Arial", fill: "#ff0" };
+    var text6 = this.game.add.text(500, 97, "O CON LA TECLA G Y UN GRITO ", regla6);
+    text6.fixedToCamera = true;
+
     this.refreshStats();
     this.pointsText.fixedToCamera = true;
     this.camuflajeText.fixedToCamera = true;
@@ -395,7 +399,8 @@ var mainState = {
       this.transparencia++;
       this.refreshStats();
       console.log("T", this.transparencia);
-      console.log(this.cont);
+      // console.log(this.cont);
+
     }
 
     game.physics.arcade.collide(
@@ -528,7 +533,7 @@ var mainState = {
   },
 
   acelerar: function () {
-    dude.body.velocity.x = 600;
+    dude.body.velocity.x = 1000;
   },
 
   agregarEnemigo: function () {
@@ -562,18 +567,19 @@ var mainState = {
   },
 
   agregarPocion: function () {
+    console.log('se agregue una pocion')
     var pocionn = game.add.sprite(
       game.width,
-      game.height - this.sizeBloque - 55,
+      game.height - this.sizeBloque - 25,
       "pocion"
     );
    pocion.add(pocionn);
-    game.physics.arcade.enable(perro);
+    game.physics.arcade.enable(pocion);
    
     // perro.scale.setTo(0.8, 0.8);
   },
   gritar: function (dude, enemigos) {
-    console.log(dude);
+    // console.log(dude);
     enemigos.destroy();
     game.add.tween(shoutText).to({ alpha: 0 }, 1000).start();
     dogActive = null;
@@ -618,18 +624,13 @@ var mainState = {
   },
   
 
-  presentarPocion: function ( pocion) {
+  presentarPocion: function (dudee, pocion) {
+    console.log( ' se presento un pocion')
     pocion.destroy();
-    let numero;
-    let min = Math.ceil(1);
-    let max = Math.floor(pocion);
-    numero = Math.floor(Math.random() * (max - min + 1) + min);
-    // var nombre = "preguntaAB" + numero;
-    imagen = game.add.sprite(70, 100, pocion);
-    imagen.scale.setTo(0.9, 0.9);
-    // game.paused = true;
-    // window.setTimeout(this.seguirjugando, 10000);
-    //
+    this.transparencia--;
+    this.refreshStats()
+  
+
     
   },
   siguienteNivel: function (dudee, castillos) {
@@ -722,6 +723,7 @@ function llenarMapa() {
       }
       case 8: {
         posiciónPocion = mapa.length;
+        console.log(mapa.length)
         if (pocion < 20 && posiciónPocion > 20 * pocion) {
           mapa.push(numero);
           large--;
