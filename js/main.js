@@ -107,7 +107,7 @@ var mainState = {
     game.load.audio("muere", "assets/sonidos/gatoCayendo.mp3");
 
     game.load.audio("musicaFondo", "assets/sonidos/opcion1.wav");
-    game.load.audio("gameFondo", ["assets/sonidos/gameover.mp3"]);
+    // game.load.audio("gameFondo", "assets/sonidos/gameover.mp3");
   },
 
   create: function () {
