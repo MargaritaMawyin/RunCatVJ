@@ -22,37 +22,36 @@ var dude,
   count = 0,
   jumpActiveCount = 0,
   soundActive = false,
-  audioContext = new AudioContext(),
+  audioContext,
   microphone = null,
   analyzer = null,
   soundThreshold = 12,
   dogActive = null,
   t3,
+  shoutText,
   killedByVoice =0,
   imagen,
   pocion;
 
 var mapa = [1, 1, 1, 1, 1, 1];
+navigator.mediaDevices.getUserMedia({ audio: true })
+.then(function(stream) {
+  console.log("Acceso al micrófono concedido");
+  audioContext = new AudioContext();
+  microphone = audioContext.createMediaStreamSource(stream);
+  analyzer = audioContext.createAnalyser();
+  microphone.connect(analyzer)
+
+  soundActive = true;
+})
+.catch(function(err) {
+  alert("No se puede acceder al micrófono, por favor permita el acceso a su micrófono")
+});
 
 var mainState = {
   preload: function () {
-    navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(function(stream) {
-      console.log("Acceso al micrófono concedido");
-      soundActive = true;
-      navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(function(stream) {
-        microphone = audioContext.createMediaStreamSource(stream);
-        analyzer = audioContext.createAnalyser();
-        microphone.connect(analyzer);
-      })
-      .catch(function(err) {
-        console.log(err);
-      });
-    })
-    .catch(function(err) {
-      alert("No se puede acceder al micrófono, por favor permita el acceso a su micrófono")
-    });
+
+    
     jumpKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     jumpSound = game.add.audio("jump");
     shoutKey = game.input.keyboard.addKey(Phaser.Keyboard.G);
@@ -306,6 +305,17 @@ var mainState = {
       t3 = this.game.add.text(10, 80, "Voz para asustar perros: □", style1);
       t3.fixedToCamera = true;
     }
+
+    //with alpha 0 it is invisible
+    shoutText = game.add.text(0, game.height - 20, "Presiona G y grita para matar al perro.", {
+
+      font: "20px Arial",
+      fill: "#ffffff",
+      align: "center"
+    });
+    shoutText.alpha = 0;
+
+
     //recordatorio de reglas
     var reglas = { font: "14px Arial", fill: "#00ff00" };
     var text = this.game.add.text(450, 10, "Comandos:", reglas);
@@ -500,9 +510,18 @@ var mainState = {
     perro.scale.setTo(0.8, 0.8);
     perro.checkWorldBounds = true;
     perro.outOfBoundsKill = true;
+
+    game.add.tween(shoutText).to({ alpha: 1 }, 1000).start();
+
+
     perro.events.onOutOfBounds.add(function () {
       dogActive = null;
     })
+  
+    //When dog is destroyed, add remove shoutText
+    perro.events.onKilled.add(function () {
+      game.add.tween(shoutText).to({ alpha: 0 }, 1000).start();
+    });
     
   },
 
@@ -520,6 +539,8 @@ var mainState = {
   gritar: function (dude, enemigos) {
     console.log(dude);
     enemigos.destroy();
+    game.add.tween(shoutText).to({ alpha: 0 }, 1000).start();
+    dogActive = null;
 
     cayendoM = game.add.audio("muere");
     cayendoM.play();
