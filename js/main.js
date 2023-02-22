@@ -83,7 +83,6 @@ var mainState = {
 
     game.load.audio("musicaFondo", "assets/sonidos/opcion1.wav");
     game.load.audio("gameFondo", ["assets/sonidos/gameover.mp3"]);
-    
   },
 
   create: function () {
@@ -237,6 +236,10 @@ var mainState = {
     //cursor para bajar rapido
     var downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     downKey.onDown.add(this.bajar, this);
+
+    //acelerar?
+    var rapidKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+    rapidKey.onDown.add(this.acelerar, this);
     // poderoso
     spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     // space.onDown.add(this.camuflar, this);
@@ -253,6 +256,31 @@ var mainState = {
     t2.fixedToCamera = true;
     var style4 = { font: "20px Arial", fill: "#00ff00" };
     this.camuflajeText = this.game.add.text(177, 50, "", style4);
+
+    //recordatorio de reglas
+    var reglas = { font: "14px Arial", fill: "#00ff00" };
+    var text = this.game.add.text(450, 10, "Comandos:", reglas);
+    text.fixedToCamera = true;
+
+    var regla1 = { font: "12px Arial", fill: "#ff0" };
+    var text1 = this.game.add.text(450, 25, "SALTAR : ⬆️ ", regla1);
+    text1.fixedToCamera = true;
+
+    var regla2 = { font: "12px Arial", fill: "#ff0" };
+    var text2 = this.game.add.text(450, 40, "SALIR DE LA PREGUNTA : ENTER", regla2);
+    text2.fixedToCamera = true;
+
+    var regla5 = { font: "12px Arial", fill: "#ff0" };
+    var text5 = this.game.add.text(450, 55, "ACELERAR : ➡️", regla5);
+    text5.fixedToCamera = true;
+
+    var regla4 = { font: "12px Arial", fill: "#ff0" };
+    var text4 = this.game.add.text(450, 70, "BAJAR RAPIDO : ⬇️", regla4);
+    text4.fixedToCamera = true;
+
+    var regla3 = { font: "12px Arial", fill: "#ff0" };
+    var text3 = this.game.add.text(450, 85, "ESQUIVAR AL PERRO : BARRA ESPACIADORA ", regla3);
+    text3.fixedToCamera = true;
 
     this.refreshStats();
     this.pointsText.fixedToCamera = true;
@@ -341,7 +369,6 @@ var mainState = {
           location.reload();
         });
       }
-      
     }
   },
 
@@ -368,14 +395,18 @@ var mainState = {
   jumpActions: function () {
     jumpActiveCount++;
     if (!dude.alive || jumpActiveCount > 2) return;
-    
+
     this.jump();
-    console.log(jumpSound)
+    console.log(jumpSound);
     jumpSound.play();
   },
 
   bajar: function () {
     dude.body.velocity.y = 600;
+  },
+
+  acelerar: function () {
+    dude.body.velocity.x = 600;
   },
 
   agregarEnemigo: function () {
@@ -416,8 +447,8 @@ var mainState = {
     game.paused = true;
     // window.setTimeout(this.seguirjugando, 10000);
     //
-    var rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-    rightKey.onDown.add(this.seguirjugando, this);
+    var enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+    enterKey.onDown.add(this.seguirjugando, this);
   },
 
   presentarPreguntaA: function (dudee, caja) {
@@ -430,7 +461,9 @@ var mainState = {
     imagen = game.add.sprite(70, 100, nombre);
     imagen.scale.setTo(0.9, 0.9);
     game.paused = true;
-    window.setTimeout(this.seguirjugando, 10000);
+    // window.setTimeout(this.seguirjugando, 10000);
+    var enterKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+    enterKey.onDown.add(this.seguirjugando, this);
   },
 
   siguienteNivel: function (dudee, castillos) {
@@ -446,58 +479,68 @@ var mainState = {
 /*
 hoyo:0 -- piso:	1 -- hoyo + caja: 2 -- pregunta camino bajo: 3 -- piso + caja: 4 -- piso + caja infinita: 5 -- castillo: 6 -- pregunta camino alto: 7
 */
-function llenarMapa(){
+function llenarMapa() {
   let large = 490;
-  let caminosAltos = [[1, 1, 1, 4, 4, 4, 2, 2, 2, 2, 4, 4, 2, 2, 2, 2, 1, 1, 1], [1, 1, 4, 4, 4, 2, 2, 2, 4, 4, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1], [1, 1, 4, 4, 4, 4, 2, 2, 2, 1, 1, 2, 2, 4, 2, 2, 4, 2, 2, 1, 1, 1]]
-  let caminosBajos = [[1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 5, 1, 1, 0, 0], [1, 1, 1, 4, 4, 1, 1, 1, 4, 4, 4, 4, 4, 5], [1, 1, 0, 0, 1, 1, 1, 4, 4, 4, 4, 4, 4, 5]]
-  let pregunta = 1
+  let caminosAltos = [
+    [1, 1, 1, 4, 4, 4, 2, 2, 2, 2, 4, 4, 2, 2, 2, 2, 1, 1, 1],
+    [1, 1, 4, 4, 4, 2, 2, 2, 4, 4, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1],
+    [1, 1, 4, 4, 4, 4, 2, 2, 2, 1, 1, 2, 2, 4, 2, 2, 4, 2, 2, 1, 1, 1],
+  ];
+  let caminosBajos = [
+    [1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 5, 1, 1, 0, 0],
+    [1, 1, 1, 4, 4, 1, 1, 1, 4, 4, 4, 4, 4, 5],
+    [1, 1, 0, 0, 1, 1, 1, 4, 4, 4, 4, 4, 4, 5],
+  ];
+  let pregunta = 1;
   let posiciónPregunta;
-  while (large > 0){
+  while (large > 0) {
     let numero = Math.floor(Math.random() * 8);
-    switch(numero){
-      case 0, 1, 2:{
+    switch (numero) {
+      case (0, 1, 2): {
         mapa = mapa.concat([numero, numero]);
         large = large - 2;
         break;
       }
       case 3: {
-        posiciónPregunta = mapa.length
-        if(pregunta < 13 && posiciónPregunta > (30 * pregunta)){
-          let caminoBajo = caminosBajos[Math.floor(Math.random() * caminosBajos.length)]
-          mapa = mapa.concat([1, 1, numero, 1], caminoBajo, [1, 1])
-          pregunta ++;
+        posiciónPregunta = mapa.length;
+        if (pregunta < 13 && posiciónPregunta > 30 * pregunta) {
+          let caminoBajo =
+            caminosBajos[Math.floor(Math.random() * caminosBajos.length)];
+          mapa = mapa.concat([1, 1, numero, 1], caminoBajo, [1, 1]);
+          pregunta++;
           large = large - caminoBajo.length - 1;
         }
         break;
       }
-      case 4:{
+      case 4: {
         mapa.push(numero);
         large--;
         break;
       }
       case 5: {
-        mapa = mapa.concat([1, 1, numero, 1, 1]) 
+        mapa = mapa.concat([1, 1, numero, 1, 1]);
         large = large - 5;
         break;
       }
-      case 6:{
+      case 6: {
         break;
       }
-      case 7:{
-        posiciónPregunta = mapa.length
-        if(pregunta < 13 && posiciónPregunta > (30 * pregunta)){
-          let caminoAlto = caminosAltos[Math.floor(Math.random() * caminosAltos.length)]
-          mapa = mapa.concat([1, 1, numero, 1] , caminoAlto, [1, 1])
-          pregunta ++;
+      case 7: {
+        posiciónPregunta = mapa.length;
+        if (pregunta < 13 && posiciónPregunta > 30 * pregunta) {
+          let caminoAlto =
+            caminosAltos[Math.floor(Math.random() * caminosAltos.length)];
+          mapa = mapa.concat([1, 1, numero, 1], caminoAlto, [1, 1]);
+          pregunta++;
           large = large - caminoAlto.length - 1;
         }
-        break;  
+        break;
       }
-    }  
-  }  
-  mapa = mapa.concat([6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
-  console.log("Tamaño del mapa: ", mapa.length)
-  console.log("Mapa: ",mapa)
+    }
+  }
+  mapa = mapa.concat([6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+  console.log("Tamaño del mapa: ", mapa.length);
+  console.log("Mapa: ", mapa);
   /*
     0, 0, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1,
     3, 1, 1, 4, 4, 4, 4, 4, 4, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0,
